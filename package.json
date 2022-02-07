@@ -1,0 +1,19 @@
+{
+  "name": "miia",
+  "version": "1.0.0",
+  "description": "New Everythng app backend (monolith)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Unengineered/Miia.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Unengineered/Miia/issues"
+  },
+  "homepage": "https://github.com/Unengineered/Miia#readme"
+}
