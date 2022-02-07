@@ -3,13 +3,13 @@ import sinon from 'sinon';
 import {testFunc, AClass} from '../src';
 
 describe("tester", function(){
-    it("should return trye", function(){
+    it("should return true", function(){
         assert.equal(testFunc(), true);
     })
 
-    it("should be able to be used instead of spies", function () {
+    it("spy test", function () {
         const callback = sinon.spy();
-
+        
         callback()
 
         assert(callback.called);
@@ -24,6 +24,14 @@ describe("tester", function(){
         assert.equal(callback(), 1); // Returns 1
         assert.equal(callback(), 2); // Returns 2
         assert.equal(callback(), 3);
+    })
+
+    it("should fake", function(){
+        const fake = sinon.fake();
+
+        fake();
+
+        assert.equal(fake.callCount, 1);
     })
 })
 
