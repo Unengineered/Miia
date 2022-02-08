@@ -1,14 +1,5 @@
-import WebsocketRequest from "./core/models/websocket_request";
+import WebsocketServer from './websocket/websocket_server'
+import { Server } from "socket.io";
+const httpServer = require('http').createServer();
 
-console.log("Hello, world");
-
-export function testFunc(): boolean{
-    return true;
-}
-
-export class AClass{
-    testFunc2(): boolean{
-        const req = WebsocketRequest.fromJson({});
-        return false;
-    }
-}
+const server = new WebsocketServer({server: new Server(httpServer)})
