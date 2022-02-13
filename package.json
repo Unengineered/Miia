@@ -38,6 +38,7 @@
     "express": "^4.17.2",
     "firebase-admin": "^10.0.2",
     "joi": "^17.6.0",
+    "mongoose": "^6.2.1",
     "socket.io": "^4.4.1"
   }
 }
