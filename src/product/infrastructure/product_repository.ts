@@ -3,7 +3,7 @@ import {DetailedThriftProductEntity, DetailedThriftProductSchema} from '../domai
 import IProductRepository from '../domain/i_product_repository'
 import ProductError from '../domain/errors/product_error'
 
-class ProductRepository implements IProductRepository{
+export default class ProductRepository implements IProductRepository{
    readonly mongoDbConnection: Connection
    readonly detailedThriftProductModel: Model<DetailedThriftProductEntity>
 
@@ -20,7 +20,16 @@ class ProductRepository implements IProductRepository{
                     if(product === null) 
                         return new ProductError({code: "no-product"})
                     else
-                        return product
+                        return new DetailedThriftProductEntity({
+                            id: product.id,
+                            name: product.name,
+                            price: product.price,
+                            originalPrice: product.originalPrice,
+                            pictures: product.pictures,
+                            sizeChart: product.sizeChart.map((chartValue) =>{
+                                return {key: chartValue.key, value: chartValue.value}
+                            })
+                        })
                 }).
                 catch((error) => {
                     return new ProductError({code: "unknown"})
@@ -45,3 +54,4 @@ class ProductRepository implements IProductRepository{
                 })
     }
 }
+

@@ -6,10 +6,10 @@ class DetailedThriftProductEntity {
     readonly price: number | null
     readonly originalPrice: number | null
     readonly pictures: string[]
-    readonly sizeChart: Object
+    readonly sizeChart: {key: String, value: String}[]
 
     constructor({ id, name, price, originalPrice, pictures, sizeChart }:
-        { id: string | null, name: string | null, price: number | null, originalPrice: number | null, pictures: string[], sizeChart: [{key: string, value: string}] }) {
+        { id: string | null, name: string | null, price: number | null, originalPrice: number | null, pictures: string[], sizeChart: {key: String, value: String}[] }) {
             this.id = id
             this.name = name
             this.price = price
@@ -32,11 +32,11 @@ class DetailedThriftProductEntity {
 }
 
 const DetailedThriftProductSchema = new Schema({
-    id: {type: Types.ObjectId, required: true, auto: true},
+    _id: {type: Types.ObjectId, required: true, auto: true},
     name: String,
     price: Number,
     originalPrice: Number,
-    prictures: [String],
+    pictures: [String],
     sizeChart: [{key: String, value: String}]
 })
 
