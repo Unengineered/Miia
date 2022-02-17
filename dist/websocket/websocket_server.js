@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const firebase_config_1 = require("../core/configs/firebase.config");
+const firebase_config_1 = require("../core/configs/firebase/firebase.config");
 const websocket_message_1 = __importDefault(require("../core/models/websocket_message"));
 const websocket_request_1 = __importDefault(require("../core/models/websocket_request"));
 class WebsocketServer {

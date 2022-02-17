@@ -8,6 +8,13 @@ class DetailedThriftProductEntity {
     readonly pictures: string[]
     readonly sizeChart: {key: String, value: String}[]
 
+    /**
+     * TODO:
+     * - add store link 
+     * - test todo
+     * - test todo 2
+     */
+
     constructor({ id, name, price, originalPrice, pictures, sizeChart }:
         { id: string | null, name: string | null, price: number | null, originalPrice: number | null, pictures: string[], sizeChart: {key: String, value: String}[] }) {
             this.id = id
@@ -19,7 +26,7 @@ class DetailedThriftProductEntity {
     }
 
     static forSaving({name, price, originalPrice, pictures, sizeChart }:
-        {name: string | null, price: number | null, originalPrice: number | null, pictures: string[], sizeChart: [{key: string, value: string}] }): DetailedThriftProductEntity{
+        {name: string | null, price: number | null, originalPrice: number | null, pictures: string[], sizeChart: {key: string, value: string}[] }): DetailedThriftProductEntity{
             return new DetailedThriftProductEntity({
                 id: null,
                 name: name,
@@ -32,7 +39,7 @@ class DetailedThriftProductEntity {
 }
 
 const DetailedThriftProductSchema = new Schema({
-    _id: {type: Types.ObjectId, required: true, auto: true},
+    _id: {type: Number, required: true},
     name: String,
     price: Number,
     originalPrice: Number,
