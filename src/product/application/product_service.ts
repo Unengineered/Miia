@@ -94,12 +94,57 @@ export default class ProductService {
             })
     }
 
-    async getProductByStore(storeId: string): Promise<(WebsocketResponse | WebsocketMessage)[]> {
+    async getProductByStore(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
         throw new ProductError({ code: "unimplimented" })
     }
 
-    async putProduct(product: DetailedThriftProductEntity): Promise<(WebsocketResponse | WebsocketMessage)[]> {
-        throw new ProductError({ code: "unimplimented" })
-       // return await this.productRepo.saveProduct(product)
+    async putProduct(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
+        try{
+            return this.productRepo.saveProduct(DetailedThriftProductEntity.forSaving({
+                name: request.body["name"] as string,
+                price: request.body["price"] as number,
+                originalPrice: request.body["originalPrice"] as number,
+                pictures: request.body["pictures"] as string[],
+                sizeChart: request.body["sizeChart"] as {key: string, value: string}[]
+            }))
+            .then((result) => {
+                if(result instanceof ProductError){
+                    return [
+                        new WebsocketResponse({
+                            responseId: request.requestId,
+                            statusCode: 400,
+                            statusMessage: "ERROR",
+                            headers: {},
+                            body: {
+                                "error" : result.code
+                            }
+                        })
+                    ]
+                }else{
+                    const product = result as DetailedThriftProductEntity
+                    return [
+                        new WebsocketResponse({
+                            responseId: request.requestId,
+                            statusCode: 200,
+                            statusMessage: "OK",
+                            headers: {},
+                            body: product.toJson()
+                        })
+                    ]
+                }
+            })
+        }catch (error){
+            return [
+                new WebsocketResponse({
+                    responseId: request.requestId,
+                    statusCode: 400,
+                    statusMessage: "ERROR",
+                    headers: {},
+                    body: {
+                        "error" : error
+                    }
+                })
+            ]
+        }
     }
 }

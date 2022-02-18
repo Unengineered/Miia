@@ -1,11 +1,9 @@
-import { expect } from 'chai'
+import { assert } from 'chai'
 import Sinon from 'sinon'
 import InterServiceMessage, { SendTo } from '../../../src/core/models/inter_service_message'
 import WebsocketRequest from '../../../src/core/models/websocket_request'
 import WebsocketResponse from '../../../src/core/models/websocket_response'
 import ProductService from '../../../src/product/application/product_service'
-import SummaryThriftProduct from '../../../src/product/domain/entities/summary_thrift_product'
-import ProductError from '../../../src/product/domain/errors/product_error'
 import ProductController from '../../../src/product/presentation/product_controller'
 
 
@@ -66,9 +64,8 @@ describe("PRODUCT CONTROLLER", function () {
                 socketId: "SOCKET_ID"
             }
         ))
-
-        //deep equality
-        expect(response).to.eql([new InterServiceMessage(
+        
+        assert.deepEqual(response, [new InterServiceMessage(
             {
                 packet: new WebsocketResponse(
                     {
@@ -96,7 +93,7 @@ describe("PRODUCT CONTROLLER", function () {
                 socketId: "SOCKET_ID",
                 sendTo: SendTo.SOCKET_ID
             }
-        )])
+        )] )
     })
 
     it("should handle PUT request")

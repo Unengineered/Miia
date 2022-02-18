@@ -14,19 +14,19 @@ export default class ProductController{
         this.productService = productService
     }
 
-    async handleRequest(request: InterServiceMessage): Promise<InterServiceMessage[]>{
-        if(request.packet instanceof WebsocketRequest){
-            switch(request.packet.method){
+    async handleRequest(interServiceMessage: InterServiceMessage): Promise<InterServiceMessage[]>{
+        if(interServiceMessage.packet instanceof WebsocketRequest){
+            switch(interServiceMessage.packet.method){
                 case "GET" : {
-                    return this.handleGetRequest(request)
+                    return this.handleGetRequest(interServiceMessage)
                 }
     
                 case "PUT" : {
-                    return this.handlePutRequest(request)
+                    return this.handlePutRequest(interServiceMessage)
                 }
     
                 case "DELETE" : {
-                    return this.handleDeleteRequest(request)
+                    return this.handleDeleteRequest(interServiceMessage)
                 }
             }
         }
@@ -72,11 +72,12 @@ export default class ProductController{
         throw new ProductError({code: "unimplimented"})
     }
 
-    private async handlePutRequest(request: InterServiceMessage) : Promise<InterServiceMessage[]>{
+    private async handlePutRequest(interServiceMessage: InterServiceMessage) : Promise<InterServiceMessage[]>{
+        const result = await this.productService.putProduct(interServiceMessage.packet as WebsocketRequest)
         throw new ProductError({code: "unimplimented"})
     }
 
-    private async handleDeleteRequest(request: InterServiceMessage) : Promise<InterServiceMessage[]>{
+    private async handleDeleteRequest(interServiceMessage: InterServiceMessage) : Promise<InterServiceMessage[]>{
         throw new ProductError({code: "unimplimented"})
     }
 }

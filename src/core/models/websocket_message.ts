@@ -4,11 +4,11 @@ export default class WebsocketMessage {
     readonly messageId: string
     readonly system: string
     readonly functionName: string
-    readonly headers: Object
-    readonly body: Object
+    readonly headers: {[key:string] : any}
+    readonly body: {[key:string] : any}
 
     constructor({ messageId, system, functionName, headers, body }:
-        { messageId: string, system: string, functionName: string, headers?: Object, body?: Object }) {
+        { messageId: string, system: string, functionName: string, headers?: {[key:string] : any}, body?: {[key:string] : any} }) {
         this.messageId = messageId
         this.system = system
         this.functionName = functionName

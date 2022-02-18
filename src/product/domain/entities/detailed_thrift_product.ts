@@ -36,7 +36,7 @@ class DetailedThriftProductEntity {
         }
     }
 
-    static forSaving({name, price, originalPrice, pictures, sizeChart }:
+    static forSaving({name, price, originalPrice, pictures, sizeChart}:
         {name: string | null, price: number | null, originalPrice: number | null, pictures: string[], sizeChart: {key: string, value: string}[] }): DetailedThriftProductEntity{
             return new DetailedThriftProductEntity({
                 id: null,
