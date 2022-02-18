@@ -1,7 +1,7 @@
 import {Schema, Types} from 'mongoose'
 
 class DetailedThriftProductEntity {
-    readonly id: string | null
+    readonly id: number | null
     readonly name: string | null
     readonly price: number | null
     readonly originalPrice: number | null
@@ -16,13 +16,24 @@ class DetailedThriftProductEntity {
      */
 
     constructor({ id, name, price, originalPrice, pictures, sizeChart }:
-        { id: string | null, name: string | null, price: number | null, originalPrice: number | null, pictures: string[], sizeChart: {key: String, value: String}[] }) {
+        { id: number | null, name: string | null, price: number | null, originalPrice: number | null, pictures: string[], sizeChart: {key: String, value: String}[] }) {
             this.id = id
             this.name = name
             this.price = price
             this.originalPrice = originalPrice
             this.pictures = pictures
             this.sizeChart = sizeChart
+    }
+
+    toJson(): Object{
+        return {
+            "id" : this.id,
+            "name" : this.name,
+            "price" : this.price,
+            "originalPrice" : this.originalPrice,
+            "pictures" : this.pictures,
+            "sizeChart" : this.sizeChart
+        }
     }
 
     static forSaving({name, price, originalPrice, pictures, sizeChart }:

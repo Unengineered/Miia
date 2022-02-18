@@ -78,7 +78,7 @@ export default class ProductRepository implements IProductRepository{
             .then((products) => {
                 return products.map((product) => {
                     return new SummaryThriftProduct({
-                        id: product.id.toString(),
+                        id: product.id,
                         name: product.name,
                         thumbnail: product.thumbnail
                     })

@@ -38,6 +38,7 @@
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.15",
     "cross-env": "^7.0.3",
+    "deep-eql": "^4.0.0",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
     "firebase-admin": "^10.0.2",

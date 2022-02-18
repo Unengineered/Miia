@@ -5,9 +5,8 @@ import ProductError from "../domain/errors/product_error";
 import Url from 'url-parse'
 import ProductService from "../application/product_service";
 import WebsocketResponse from "../../core/models/websocket_response";
-import QueryString from 'query-string'
 
-class ProductController{
+export default class ProductController{
 
     readonly productService: ProductService
 
@@ -31,65 +30,53 @@ class ProductController{
                 }
             }
         }
-        throw new ProductError({code: "unimpliment"})
+        throw new ProductError({code: "unimplimented"})
     }
 
-    async handleMessage(message: InterServiceMessage): Promise<InterServiceMessage[]>{
-        throw new ProductError({code: "unimpliment"})
+    async handleMessage(interServiceMessage: InterServiceMessage): Promise<InterServiceMessage[]>{
+        throw new ProductError({code: "unimplimented"})
     } 
 
-    //TODO(advait): Handle product errors
-    private async handleGetRequest(request: InterServiceMessage) : Promise<InterServiceMessage[]>{
-        if(request.packet instanceof WebsocketRequest){
-            const url = new Url(request.packet.url)
+    private async handleGetRequest(interServiceMessage: InterServiceMessage) : Promise<InterServiceMessage[]>{
+        if(interServiceMessage.packet instanceof WebsocketRequest){
+            const url = new Url(interServiceMessage.packet.url)
             switch(url.pathname){
-                case 'summary' : {
-                    const serviceResponse = await this.productService.getSummaryProducts()
-                    return [new InterServiceMessage({
-                        packet: new WebsocketResponse({
-                                responseId: request.packet.requestId,
-                                statusCode: 200,
-                                statusMessage: "OK",
-                                headers: {},
-                                body: {
-                                    products: serviceResponse
+                case '/summary' : {
+                    const serviceResults = await this.productService.getSummaryProducts(interServiceMessage.packet)
+                    return serviceResults.map((result) => {
+                            return new InterServiceMessage(
+                                {
+                                    packet: result,
+                                    socketId: interServiceMessage.socketId,
+                                    uid: interServiceMessage.uid,
+                                    sendTo: result instanceof WebsocketResponse ? SendTo.SOCKET_ID : SendTo.UID
                                 }
-                            }),
-                        uid: request.uid,
-                        sendTo: SendTo.SOCKET_ID,
-                        socketId: request.socketId
-                    })]
+                            )
+                    })
                 }
     
-                case 'detailed' : {
-                    //TODO: Handle type error of parsed id string
-                    const id = QueryString.parseUrl(request.packet.url).query['id'] as string
-                    const num_id = Number.parseInt(id)
+                case '/detailed' : {
+                    const serviceResults = await this.productService.getDetailedProduct(interServiceMessage.packet)
 
-                    const serviceResponse = await this.productService.getDetailedProduct(num_id)
-                    return [new InterServiceMessage({
-                        packet: new WebsocketResponse({
-                                responseId: request.packet.requestId,
-                                statusCode: 200,
-                                statusMessage: "OK",
-                                headers: {},
-                                body: serviceResponse
-                            }),
-                        uid: request.uid,
-                        sendTo: SendTo.SOCKET_ID,
-                        socketId: request.socketId
-                    })]
+                    return serviceResults.map((serviceResult) => {
+                        return new InterServiceMessage({
+                            packet: serviceResult,
+                            uid: interServiceMessage.uid,
+                            socketId: interServiceMessage.socketId,
+                            sendTo: serviceResult instanceof WebsocketRequest ? SendTo.SOCKET_ID : SendTo.UID
+                        })
+                    })
                 }
             }
         }
-        throw new ProductError({code: "unimpliment"})
+        throw new ProductError({code: "unimplimented"})
     }
 
     private async handlePutRequest(request: InterServiceMessage) : Promise<InterServiceMessage[]>{
-        throw new ProductError({code: "unimpliment"})
+        throw new ProductError({code: "unimplimented"})
     }
 
     private async handleDeleteRequest(request: InterServiceMessage) : Promise<InterServiceMessage[]>{
-        throw new ProductError({code: "unimpliment"})
+        throw new ProductError({code: "unimplimented"})
     }
 }
