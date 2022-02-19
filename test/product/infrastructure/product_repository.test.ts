@@ -5,7 +5,7 @@ import ProductRepository from '../../../src/product/infrastructure/product_repos
 import IProductRepository from '../../../src/product/domain/i_product_repository'
 import { DetailedThriftProductEntity, DetailedThriftProductSchema } from '../../../src/product/domain/entities/detailed_thrift_product'
 import { assert } from 'chai'
-import { PrismaClient} from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 
 //TODO: Find a way to mock prisma.
 
@@ -82,15 +82,8 @@ describe.skip("PRODUCT REPOSITORY", function () {
                 { key: "chest", value: "32" }
             ]
         })
-        if (result instanceof DetailedThriftProductEntity) {
-            assert.equal(result.id, matcher.id)
-            assert.equal(result.name, matcher.name)
-            assert.equal(result.price, matcher.price)
-            assert.equal(result.originalPrice, matcher.originalPrice)
 
-            //TODO(advait): Figure out a way to match arrays
-            //assert.equal(result.pictures, matcher.pictures)
-            //assert.equal(result.sizeChart, matcher.sizeChart)
-        }
+        assert.deepEqual(result, matcher)
+
     })
 })
