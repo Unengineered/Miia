@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { DetailedThriftProductEntity } from './product/domain/entities/detailed_thrift_product';
 import ProductService from './product/application/product_service';
 require('dotenv').config()
-
+//h
 const prod_repo = new ProductRepository({
     mongoDbConnection: mongoose.createConnection(process.env.MONGO_REMOTE_URI ?? ""),
     prismaClient: new PrismaClient()
