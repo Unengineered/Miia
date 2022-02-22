@@ -23,6 +23,13 @@ class ProductService {
     getDetailedProduct(request) {
         return __awaiter(this, void 0, void 0, function* () {
             //TODO: Handle type error of parsed id string
+            //TODO: remove requirement for id
+            /**
+             * TODO:
+             * [] - check for store_id param
+             * [] - return products only from that store if present
+             * [] - return all products if no store_id is present
+             */
             const id = query_string_1.default.parseUrl(request.url).query['id'];
             if (id === null) {
                 return yield this.productRepo.getDetailedProductsByDate()
@@ -31,8 +38,8 @@ class ProductService {
                         return [
                             new websocket_response_1.default({
                                 responseId: request.requestId,
-                                statusCode: 400,
-                                statusMessage: "ERROR",
+                                statusCode: 404,
+                                statusMessage: "NOT_FOUND",
                                 headers: {},
                                 body: {
                                     error: result.code
@@ -56,6 +63,7 @@ class ProductService {
                     }
                 });
             }
+            //Comment out this part
             return yield this.productRepo.getDetailedProduct(id)
                 .then((result) => {
                 if (result instanceof product_error_1.default) {
@@ -86,51 +94,7 @@ class ProductService {
             });
         });
     }
-    getSummaryProducts(request) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.productRepo.getProductsByDate()
-                .then((result) => {
-                if (result instanceof product_error_1.default) {
-                    return [
-                        new websocket_response_1.default({
-                            responseId: request.requestId,
-                            statusCode: 400,
-                            statusMessage: "ERROR",
-                            headers: {},
-                            body: {
-                                error: result.code
-                            }
-                        })
-                    ];
-                }
-                const products = result;
-                return [
-                    new websocket_response_1.default({
-                        responseId: request.requestId,
-                        statusCode: 200,
-                        statusMessage: "OK",
-                        headers: {},
-                        body: {
-                            products: products.map((product) => product.toJson())
-                        }
-                    })
-                ];
-            })
-                .catch((error) => {
-                return [
-                    new websocket_response_1.default({
-                        responseId: request.requestId,
-                        statusCode: 400,
-                        statusMessage: "ERROR",
-                        headers: {},
-                        body: {
-                            error: error.code
-                        }
-                    })
-                ];
-            });
-        });
-    }
+    //TODO: Rename to getDetailedProductsByStore
     getProductByStore(request) {
         return __awaiter(this, void 0, void 0, function* () {
             const storeId = query_string_1.default.parseUrl(request.url).query['store_id'];
@@ -218,6 +182,56 @@ class ProductService {
                     })
                 ];
             }
+        });
+    }
+    /**
+     * Some functions won't be required after
+     * moving away from the SQL databases, they
+     * have been listed below.
+     */
+    getSummaryProducts(request) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.productRepo.getProductsByDate()
+                .then((result) => {
+                if (result instanceof product_error_1.default) {
+                    return [
+                        new websocket_response_1.default({
+                            responseId: request.requestId,
+                            statusCode: 400,
+                            statusMessage: "ERROR",
+                            headers: {},
+                            body: {
+                                error: result.code
+                            }
+                        })
+                    ];
+                }
+                const products = result;
+                return [
+                    new websocket_response_1.default({
+                        responseId: request.requestId,
+                        statusCode: 200,
+                        statusMessage: "OK",
+                        headers: {},
+                        body: {
+                            products: products.map((product) => product.toJson())
+                        }
+                    })
+                ];
+            })
+                .catch((error) => {
+                return [
+                    new websocket_response_1.default({
+                        responseId: request.requestId,
+                        statusCode: 400,
+                        statusMessage: "ERROR",
+                        headers: {},
+                        body: {
+                            error: error.code
+                        }
+                    })
+                ];
+            });
         });
     }
 }

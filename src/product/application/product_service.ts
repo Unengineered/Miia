@@ -14,7 +14,7 @@ export default class ProductService {
         this.productRepo = productRepo
     }
 
-    async getDetailedProduct(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
+    async getDetailedThriftProducts(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
         //TODO: Handle type error of parsed id string
         //TODO: remove requirement for id
 

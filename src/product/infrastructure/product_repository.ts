@@ -113,8 +113,8 @@ export default class ProductRepository implements IProductRepository{
                     }
                 ]
             })
-            .then((products) => {
-                return products.map((product) => {
+            .then((products:any) => {
+                return products.map((product:any) => {
                     return new SummaryThriftProduct({
                         id: product.id,
                         name: product.name,
@@ -122,7 +122,7 @@ export default class ProductRepository implements IProductRepository{
                     })
                 })
             })
-            .catch((err) => {
+            .catch((err:any) => {
                 console.log("SQL ERROR")
                 console.log(err)
                 return new ProductError({code: "unknown"})
