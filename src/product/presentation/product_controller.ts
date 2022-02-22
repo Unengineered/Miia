@@ -40,6 +40,9 @@ export default class ProductController {
     private async handleGetRequest(interServiceMessage: InterServiceMessage): Promise<InterServiceMessage[]> {
         if (interServiceMessage.packet instanceof WebsocketRequest) {
             const url = new Url(interServiceMessage.packet.url)
+
+            //TODO: Comment out switch statement and forward all requests to getDetailedProducts function
+
             switch (url.pathname) {
                 case '/summary': {
                     const serviceResults = await this.productService.getSummaryProducts(interServiceMessage.packet)

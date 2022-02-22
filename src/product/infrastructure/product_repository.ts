@@ -17,7 +17,118 @@ export default class ProductRepository implements IProductRepository{
        this.detailedThriftProductModel = this.mongoDbConnection.model<DetailedThriftProductEntity>('DetailedThriftProduct', DetailedThriftProductSchema)
        this.storeLinkModel = this.mongoDbConnection.model<StoreLinkEntity>('StoreLink', StoreLinkSchema)
    }
-   
+
+    async saveProduct(product: DetailedThriftProductEntity): Promise<DetailedThriftProductEntity | ProductError>{
+        // const SQLEntry = await this.prismaClient.summaryProduct.create({
+        //     data: {
+        //         name: product.name,
+        //         thumbnail: product.pictures[0]
+        //     }
+        // })
+
+        const storeId = (product.storeLink instanceof StoreLinkEntity) ? product.storeLink.id : product.storeLink
+
+        const doc = new this.detailedThriftProductModel({
+            name: product.name,
+            price: product.price,
+            originalPrice: product.originalPrice,
+            pictures: product.pictures,
+            sizeChart: product.sizeChart,
+            storeLink: storeId
+        })
+
+        return doc.save()
+                .then((doc) => {
+                    return doc
+                })
+                .catch((err) => {
+                    console.log(err)
+                    return new ProductError({code: "unknown"})
+                })
+    }
+
+    async getDetailedProductsByStore(id: string):  Promise<DetailedThriftProductEntity[] | ProductError>{
+        return this.detailedThriftProductModel
+            .find({'storeLink' : id})
+            .populate('storeLink')
+            .exec()
+            .then((products) => {
+                if(products === null) return new ProductError({code: "no-items"})
+                return products.map((product) => {
+                    //Remapping product to entity to avoid extra fields
+                    return new DetailedThriftProductEntity({
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        originalPrice: product.originalPrice,
+                        pictures: product.pictures,
+                        sizeChart: product.sizeChart,
+                        storeLink: product.storeLink
+                    })
+                })
+            })
+            .catch((err) =>{
+                return new ProductError({code: "unknown"})
+            })
+    }
+
+    async getDetailedProductsByDate(): Promise<DetailedThriftProductEntity[] | ProductError> {
+        return this.detailedThriftProductModel
+                .find()
+                .populate('storeLink')
+                .sort({"_id": -1}) 
+                .exec()
+                .then((products) => {
+                    if(products === null) return new ProductError({code: "no-items"})
+                    return products.map((product) => {
+                        //Remapping product to entity to avoid extra fields
+                        return new DetailedThriftProductEntity({
+                            id: product.id,
+                            name: product.name,
+                            price: product.price,
+                            originalPrice: product.originalPrice,
+                            pictures: product.pictures,
+                            sizeChart: product.sizeChart,
+                            storeLink: product.storeLink
+                        })
+                    })
+                })
+                .catch((err) =>{
+                    return new ProductError({code: "unknown"})
+                })
+    }
+
+    /**
+     * Some functions won't be required after
+     * moving away from the SQL databases, they 
+     * have been listed below.
+     */
+
+     async getProductsByDate(): Promise<SummaryThriftProduct[] | ProductError>{
+        return this.prismaClient.summaryProduct
+            .findMany({
+                orderBy: [
+                    {
+                        createdAt: 'desc'
+                    }
+                ]
+            })
+            .then((products) => {
+                return products.map((product) => {
+                    return new SummaryThriftProduct({
+                        id: product.id,
+                        name: product.name,
+                        thumbnail: product.thumbnail
+                    })
+                })
+            })
+            .catch((err) => {
+                console.log("SQL ERROR")
+                console.log(err)
+                return new ProductError({code: "unknown"})
+            })
+    }
+
     async getDetailedProduct(id: string): Promise<DetailedThriftProductEntity | ProductError> {
         return this.detailedThriftProductModel
                 .findById(id)
@@ -49,111 +160,6 @@ export default class ProductRepository implements IProductRepository{
                 catch((error) => {
                     return new ProductError({code: "unknown"})
                 })
-    }
-
-    async saveProduct(product: DetailedThriftProductEntity): Promise<DetailedThriftProductEntity | ProductError>{
-        // const SQLEntry = await this.prismaClient.summaryProduct.create({
-        //     data: {
-        //         name: product.name,
-        //         thumbnail: product.pictures[0]
-        //     }
-        // })
-
-        const storeId = (product.storeLink instanceof StoreLinkEntity) ? product.storeLink.id : product.storeLink
-
-        const doc = new this.detailedThriftProductModel({
-            name: product.name,
-            price: product.price,
-            originalPrice: product.originalPrice,
-            pictures: product.pictures,
-            sizeChart: product.sizeChart,
-            storeLink: storeId
-        })
-
-        return doc.save()
-                .then((doc) => {
-                    return doc
-                })
-                .catch((err) => {
-                    console.log(err)
-                    return new ProductError({code: "unknown"})
-                })
-    }
-
-    async getProductsByDate(): Promise<SummaryThriftProduct[] | ProductError>{
-        return this.prismaClient.summaryProduct
-            .findMany({
-                orderBy: [
-                    {
-                        createdAt: 'desc'
-                    }
-                ]
-            })
-            .then((products) => {
-                return products.map((product) => {
-                    return new SummaryThriftProduct({
-                        id: product.id,
-                        name: product.name,
-                        thumbnail: product.thumbnail
-                    })
-                })
-            })
-            .catch((err) => {
-                console.log("SQL ERROR")
-                console.log(err)
-                return new ProductError({code: "unknown"})
-            })
-    }
-
-    async getDetailedProductsByStore(id: string):  Promise<DetailedThriftProductEntity[] | ProductError>{
-        return this.detailedThriftProductModel
-            .find({'storeLink' : id})
-            .exec()
-            .then((products) => {
-                if(products === null) return new ProductError({code: "no-items"})
-                return products.map((product) => {
-                    //Remapping product to entity to avoid extra fields
-                    return new DetailedThriftProductEntity({
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        originalPrice: product.originalPrice,
-                        pictures: product.pictures,
-                        sizeChart: product.sizeChart,
-                        storeLink: product.storeLink
-                    })
-                })
-            })
-            .catch((err) =>{
-                return new ProductError({code: "unknown"})
-            })
-    }
-
-    async getDetailedProductsByDate(): Promise<DetailedThriftProductEntity[] | ProductError> {
-        return this.detailedThriftProductModel
-                .find()
-                .populate('storeLink')
-                .sort({"_id": -1}) 
-                .exec()
-                .then((products) => {
-                    if(products === null) return new ProductError({code: "no-items"})
-                    return products.map((product) =>{
-                        //Remapping product to entity to avoid extra fields
-                        return new DetailedThriftProductEntity({
-                            id: product.id,
-                            name: product.name,
-                            price: product.price,
-                            originalPrice: product.originalPrice,
-                            pictures: product.pictures,
-                            sizeChart: product.sizeChart,
-                            storeLink: product.storeLink
-                        })
-                    })
-                })
-                .catch((err) =>{
-                    return new ProductError({code: "unknown"})
-                })
-             
     }
 }
 

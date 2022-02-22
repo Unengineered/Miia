@@ -49,6 +49,14 @@ class StoreLinkEntity {
         this.thumbnail = thumbnail;
         this.instagram = instagram;
     }
+    static forSaving({ name, thumbnail, instagram }) {
+        return new StoreLinkEntity({
+            id: null,
+            name: name,
+            thumbnail: thumbnail,
+            instagram: instagram
+        });
+    }
     toJson() {
         return {
             "id": this.id,

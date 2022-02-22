@@ -1,9 +1,10 @@
 import { Schema, Types } from 'mongoose'
 
+
 class DetailedThriftProductEntity {
     readonly id: string | null
     readonly name: string | null
-    readonly price: number | null
+    readonly price: number
     readonly originalPrice: number | null
     readonly pictures: string[]
     readonly sizeChart: { key: String, value: String }[]
@@ -17,7 +18,7 @@ class DetailedThriftProductEntity {
      */
 
     constructor({ id, name, price, originalPrice, pictures, sizeChart, storeLink }:
-        { id: string | null, name: string | null, price: number | null, originalPrice: number | null, pictures: string[], sizeChart: { key: String, value: String }[], storeLink: StoreLinkEntity | string }) {
+        { id: string | null, name: string | null, price: number, originalPrice: number | null, pictures: string[], sizeChart: { key: String, value: String }[], storeLink: StoreLinkEntity | string }) {
         this.id = id
         this.name = name
         this.price = price
@@ -40,7 +41,7 @@ class DetailedThriftProductEntity {
     }
 
     static forSaving({ name, price, originalPrice, pictures, sizeChart, storeLink }:
-        { name: string | null, price: number | null, originalPrice: number | null, pictures: string[], sizeChart: { key: string, value: string }[], storeLink: string }): DetailedThriftProductEntity {
+        { name: string | null, price: number, originalPrice: number | null, pictures: string[], sizeChart: { key: string, value: string }[], storeLink: string }): DetailedThriftProductEntity {
         return new DetailedThriftProductEntity({
             id: null,
             name: name,
@@ -55,15 +56,25 @@ class DetailedThriftProductEntity {
 
 class StoreLinkEntity {
     readonly name: string
-    readonly id: string
+    readonly id: string | null
     readonly thumbnail: string
     readonly instagram: string
 
-    constructor({ id, name, thumbnail, instagram }: { id: string, name: string, thumbnail: string, instagram: string }) {
+    constructor({ id, name, thumbnail, instagram }: { id: string | null, name: string, thumbnail: string, instagram: string }) {
         this.id = id
         this.name = name
         this.thumbnail = thumbnail
         this.instagram = instagram
+    }
+
+    static forSaving({name, thumbnail, instagram} :
+         {name: string, thumbnail: string, instagram: string}): StoreLinkEntity{
+        return new StoreLinkEntity({
+            id: null,
+            name: name,
+            thumbnail: thumbnail,
+            instagram: instagram
+        })
     }
 
     toJson(): Object {
