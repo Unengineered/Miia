@@ -38,7 +38,21 @@ function func() {
         //const response = await prod_repo.getProductsByDate()
         // const response = await prod_repo.getDetailedProduct(5)
         //const response = await prod_service.getDetailedProduct(5)
-        const response = yield prod_service.getSummaryProducts();
+        //const response = await prod_service.getSummaryProducts()
+        // const response = await prod_repo.saveProduct(DetailedThriftProductEntity.forSaving({
+        //     name: "NEW_PROD3",
+        //     price: 200,
+        //     originalPrice: 2000,
+        //     pictures: ["URL1", "URL2"],
+        //     sizeChart: [
+        //         {key: "KEY", value: "VALUE"},
+        //         {key: "KEY2", value: "VALUE2"}
+        //     ],
+        //     storeLink: "62148f53cd944133da8d8adf"
+        // }))
+        //const response = await prod_repo.getDetailedProduct("62148d1a3fcd9b74df344a32")
+        //const response = await prod_repo.getDetailedProductsByDate()
+        const response = yield prod_repo.getDetailedProductsByStore("62148dbacd944133da8d8ad4");
         console.log(response);
     });
 }

@@ -18,9 +18,44 @@ export default class ProductService {
         //TODO: Handle type error of parsed id string
 
         const id = QueryString.parseUrl(request.url).query['id'] as string
-        const num_id = Number.parseInt(id)
 
-        return await this.productRepo.getDetailedProduct(num_id)
+        if(id === null){
+            return await this.productRepo.getDetailedProductsByDate()
+                .then((result)=>{
+                    if(result instanceof ProductError){
+                        return [
+                            new WebsocketResponse(
+                                {
+                                    responseId: request.requestId,
+                                    statusCode: 400,
+                                    statusMessage: "ERROR",
+                                    headers: {},
+                                    body: {
+                                        error: result.code
+                                    } 
+                                }
+                            )
+                        ]
+                    }else{
+                        const products = result as DetailedThriftProductEntity[]
+                        return [
+                            new WebsocketResponse(
+                                {
+                                    responseId: request.requestId,
+                                    statusCode: 200,
+                                    statusMessage: "OK",
+                                    headers: {},
+                                    body: {
+                                        "detailed_thrift_products": products.map((product) => product.toJson())
+                                    }
+                                }
+                            )
+                        ]
+                    }
+                })
+        }
+
+        return await this.productRepo.getDetailedProduct(id)
             .then((result) =>{
                 if(result instanceof ProductError){
                     return [
@@ -95,7 +130,42 @@ export default class ProductService {
     }
 
     async getProductByStore(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
-        throw new ProductError({ code: "unimplimented" })
+
+        const storeId =  QueryString.parseUrl(request.url).query['store_id'] as string
+
+        return await this.productRepo.getDetailedProductsByStore(storeId)
+        .then((result)=>{
+            if(result instanceof ProductError){
+                return [
+                    new WebsocketResponse(
+                        {
+                            responseId: request.requestId,
+                            statusCode: 400,
+                            statusMessage: "ERROR",
+                            headers: {},
+                            body: {
+                                error: result.code
+                            } 
+                        }
+                    )
+                ]
+            }else{
+                const products = result as DetailedThriftProductEntity[]
+                return [
+                    new WebsocketResponse(
+                        {
+                            responseId: request.requestId,
+                            statusCode: 200,
+                            statusMessage: "OK",
+                            headers: {},
+                            body: {
+                                "detailed_thrift_products": products.map((product) => product.toJson())
+                            }
+                        }
+                    )
+                ]
+            }
+        })
     }
 
     async putProduct(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
@@ -105,7 +175,8 @@ export default class ProductService {
                 price: request.body["price"] as number,
                 originalPrice: request.body["originalPrice"] as number,
                 pictures: request.body["pictures"] as string[],
-                sizeChart: request.body["sizeChart"] as {key: string, value: string}[]
+                sizeChart: request.body["sizeChart"] as {key: string, value: string}[],
+                storeLink: request.body["storeLink"] as string
             }))
             .then((result) => {
                 if(result instanceof ProductError){

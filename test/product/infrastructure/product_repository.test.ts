@@ -5,11 +5,11 @@ import ProductRepository from '../../../src/product/infrastructure/product_repos
 import IProductRepository from '../../../src/product/domain/i_product_repository'
 import { DetailedThriftProductEntity, DetailedThriftProductSchema } from '../../../src/product/domain/entities/detailed_thrift_product'
 import { assert } from 'chai'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient} from '@prisma/client'
 
 //TODO: Find a way to mock prisma.
 
-describe.skip("PRODUCT REPOSITORY", function () {
+describe("PRODUCT REPOSITORY", function () {
 
     var mongod: MongoMemoryServer
     var repo: IProductRepository
@@ -55,7 +55,7 @@ describe.skip("PRODUCT REPOSITORY", function () {
         mongod.stop()
     })
 
-    it("should save document with new detailed thrift product", async function () {
+    it.skip("should save document with new detailed thrift product", async function () {
         await repo.saveProduct(DetailedThriftProductEntity.forSaving({
             name: "NAME",
             price: 200,

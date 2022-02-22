@@ -7,5 +7,12 @@ class SummaryThriftProduct {
         this.name = name;
         this.thumbnail = thumbnail;
     }
+    toJson() {
+        return {
+            "id": this.id,
+            "name": this.name,
+            "thumbnail": this.thumbnail
+        };
+    }
 }
 exports.default = SummaryThriftProduct;

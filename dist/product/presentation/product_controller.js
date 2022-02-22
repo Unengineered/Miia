@@ -17,88 +17,82 @@ const websocket_request_1 = __importDefault(require("../../core/models/websocket
 const product_error_1 = __importDefault(require("../domain/errors/product_error"));
 const url_parse_1 = __importDefault(require("url-parse"));
 const websocket_response_1 = __importDefault(require("../../core/models/websocket_response"));
-const query_string_1 = __importDefault(require("query-string"));
 class ProductController {
     constructor({ productService }) {
         this.productService = productService;
     }
-    handleRequest(request) {
+    handleRequest(interServiceMessage) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (request.packet instanceof websocket_request_1.default) {
-                switch (request.packet.method) {
+            if (interServiceMessage.packet instanceof websocket_request_1.default) {
+                switch (interServiceMessage.packet.method) {
                     case "GET": {
-                        return this.handleGetRequest(request);
+                        return this.handleGetRequest(interServiceMessage);
                     }
                     case "PUT": {
-                        return this.handlePutRequest(request);
+                        return this.handlePutRequest(interServiceMessage);
                     }
                     case "DELETE": {
-                        return this.handleDeleteRequest(request);
+                        return this.handleDeleteRequest(interServiceMessage);
                     }
                 }
             }
-            throw new product_error_1.default({ code: "unimpliment" });
+            throw new product_error_1.default({ code: "unimplimented" });
         });
     }
-    handleMessage(message) {
+    handleMessage(interServiceMessage) {
         return __awaiter(this, void 0, void 0, function* () {
-            throw new product_error_1.default({ code: "unimpliment" });
+            throw new product_error_1.default({ code: "unimplimented" });
         });
     }
-    //TODO(advait): Handle product errors
-    handleGetRequest(request) {
+    handleGetRequest(interServiceMessage) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (request.packet instanceof websocket_request_1.default) {
-                const url = new url_parse_1.default(request.packet.url);
+            if (interServiceMessage.packet instanceof websocket_request_1.default) {
+                const url = new url_parse_1.default(interServiceMessage.packet.url);
                 switch (url.pathname) {
-                    case 'summary': {
-                        const serviceResponse = yield this.productService.getSummaryProducts();
-                        return [new inter_service_message_1.InterServiceMessage({
-                                packet: new websocket_response_1.default({
-                                    responseId: request.packet.requestId,
-                                    statusCode: 200,
-                                    statusMessage: "OK",
-                                    headers: {},
-                                    body: {
-                                        products: serviceResponse
-                                    }
-                                }),
-                                uid: request.uid,
-                                sendTo: inter_service_message_1.SendTo.SOCKET_ID,
-                                socketId: request.socketId
-                            })];
+                    case '/summary': {
+                        const serviceResults = yield this.productService.getSummaryProducts(interServiceMessage.packet);
+                        return serviceResults.map((result) => {
+                            return new inter_service_message_1.InterServiceMessage({
+                                packet: result,
+                                socketId: interServiceMessage.socketId,
+                                uid: interServiceMessage.uid,
+                                sendTo: result instanceof websocket_response_1.default ? inter_service_message_1.SendTo.SOCKET_ID : inter_service_message_1.SendTo.UID
+                            });
+                        });
                     }
-                    case 'detailed': {
-                        //TODO: Handle type error of parsed id string
-                        const id = query_string_1.default.parseUrl(request.packet.url).query['id'];
-                        const num_id = Number.parseInt(id);
-                        const serviceResponse = yield this.productService.getDetailedProduct(num_id);
-                        return [new inter_service_message_1.InterServiceMessage({
-                                packet: new websocket_response_1.default({
-                                    responseId: request.packet.requestId,
-                                    statusCode: 200,
-                                    statusMessage: "OK",
-                                    headers: {},
-                                    body: serviceResponse
-                                }),
-                                uid: request.uid,
-                                sendTo: inter_service_message_1.SendTo.SOCKET_ID,
-                                socketId: request.socketId
-                            })];
+                    case '/detailed': {
+                        const serviceResults = yield this.productService.getDetailedProduct(interServiceMessage.packet);
+                        return serviceResults.map((serviceResult) => {
+                            return new inter_service_message_1.InterServiceMessage({
+                                packet: serviceResult,
+                                uid: interServiceMessage.uid,
+                                socketId: interServiceMessage.socketId,
+                                sendTo: serviceResult instanceof websocket_response_1.default ? inter_service_message_1.SendTo.SOCKET_ID : inter_service_message_1.SendTo.UID
+                            });
+                        });
                     }
                 }
             }
-            throw new product_error_1.default({ code: "unimpliment" });
+            throw new product_error_1.default({ code: "unimplimented" });
         });
     }
-    handlePutRequest(request) {
+    handlePutRequest(interServiceMessage) {
         return __awaiter(this, void 0, void 0, function* () {
-            throw new product_error_1.default({ code: "unimpliment" });
+            const serviceResults = yield this.productService.putProduct(interServiceMessage.packet);
+            return serviceResults.map((result) => {
+                return new inter_service_message_1.InterServiceMessage({
+                    packet: result,
+                    socketId: interServiceMessage.socketId,
+                    uid: interServiceMessage.uid,
+                    sendTo: result instanceof websocket_response_1.default ? inter_service_message_1.SendTo.SOCKET_ID : inter_service_message_1.SendTo.UID
+                });
+            });
         });
     }
-    handleDeleteRequest(request) {
+    handleDeleteRequest(interServiceMessage) {
         return __awaiter(this, void 0, void 0, function* () {
-            throw new product_error_1.default({ code: "unimpliment" });
+            throw new product_error_1.default({ code: "unimplimented" });
         });
     }
 }
+exports.default = ProductController;

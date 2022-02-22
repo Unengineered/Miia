@@ -1,5 +1,5 @@
 import { Model, Types , Document, Connection} from "mongoose";
-import {DetailedThriftProductEntity, DetailedThriftProductSchema} from '../domain/entities/detailed_thrift_product'
+import {DetailedThriftProductEntity, DetailedThriftProductSchema, StoreLinkEntity, StoreLinkSchema} from '../domain/entities/detailed_thrift_product'
 import IProductRepository from '../domain/i_product_repository'
 import ProductError from '../domain/errors/product_error'
 import { PrismaClient } from "@prisma/client";
@@ -8,17 +8,20 @@ import SummaryThriftProduct from "../domain/entities/summary_thrift_product";
 export default class ProductRepository implements IProductRepository{
    readonly mongoDbConnection: Connection
    readonly detailedThriftProductModel: Model<DetailedThriftProductEntity>
+   readonly storeLinkModel: Model<StoreLinkEntity>
    readonly prismaClient: PrismaClient
 
    constructor({mongoDbConnection, prismaClient} : {mongoDbConnection: Connection, prismaClient: PrismaClient}){
        this.mongoDbConnection = mongoDbConnection
        this.prismaClient = prismaClient
        this.detailedThriftProductModel = this.mongoDbConnection.model<DetailedThriftProductEntity>('DetailedThriftProduct', DetailedThriftProductSchema)
+       this.storeLinkModel = this.mongoDbConnection.model<StoreLinkEntity>('StoreLink', StoreLinkSchema)
    }
    
-    async getDetailedProduct(id: number): Promise<DetailedThriftProductEntity | ProductError> {
+    async getDetailedProduct(id: string): Promise<DetailedThriftProductEntity | ProductError> {
         return this.detailedThriftProductModel
                 .findById(id)
+                .populate('storeLink')
                 .exec()
                 .then((product) => {
                     if(product === null) 
@@ -32,7 +35,15 @@ export default class ProductRepository implements IProductRepository{
                             pictures: product.pictures,
                             sizeChart: product.sizeChart.map((chartValue) =>{
                                 return {key: chartValue.key, value: chartValue.value}
-                            })
+                            }),
+                            storeLink: (product.storeLink instanceof StoreLinkEntity) ?  new StoreLinkEntity(
+                                {
+                                    id: product.storeLink.id,
+                                    name: product.storeLink.name,
+                                    thumbnail: product.storeLink.thumbnail,
+                                    instagram: product.storeLink.instagram
+                                } 
+                            ) : product.storeLink
                         })
                 }).
                 catch((error) => {
@@ -41,20 +52,22 @@ export default class ProductRepository implements IProductRepository{
     }
 
     async saveProduct(product: DetailedThriftProductEntity): Promise<DetailedThriftProductEntity | ProductError>{
-        const SQLEntry = await this.prismaClient.summaryProduct.create({
-            data: {
-                name: product.name,
-                thumbnail: product.pictures[0]
-            }
-        })
+        // const SQLEntry = await this.prismaClient.summaryProduct.create({
+        //     data: {
+        //         name: product.name,
+        //         thumbnail: product.pictures[0]
+        //     }
+        // })
+
+        const storeId = (product.storeLink instanceof StoreLinkEntity) ? product.storeLink.id : product.storeLink
 
         const doc = new this.detailedThriftProductModel({
-            _id: SQLEntry.id,
             name: product.name,
             price: product.price,
             originalPrice: product.originalPrice,
             pictures: product.pictures,
-            sizeChart: product.sizeChart 
+            sizeChart: product.sizeChart,
+            storeLink: storeId
         })
 
         return doc.save()
@@ -62,6 +75,7 @@ export default class ProductRepository implements IProductRepository{
                     return doc
                 })
                 .catch((err) => {
+                    console.log(err)
                     return new ProductError({code: "unknown"})
                 })
     }
@@ -89,6 +103,57 @@ export default class ProductRepository implements IProductRepository{
                 console.log(err)
                 return new ProductError({code: "unknown"})
             })
+    }
+
+    async getDetailedProductsByStore(id: string):  Promise<DetailedThriftProductEntity[] | ProductError>{
+        return this.detailedThriftProductModel
+            .find({'storeLink' : id})
+            .exec()
+            .then((products) => {
+                if(products === null) return new ProductError({code: "no-items"})
+                return products.map((product) => {
+                    //Remapping product to entity to avoid extra fields
+                    return new DetailedThriftProductEntity({
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        originalPrice: product.originalPrice,
+                        pictures: product.pictures,
+                        sizeChart: product.sizeChart,
+                        storeLink: product.storeLink
+                    })
+                })
+            })
+            .catch((err) =>{
+                return new ProductError({code: "unknown"})
+            })
+    }
+
+    async getDetailedProductsByDate(): Promise<DetailedThriftProductEntity[] | ProductError> {
+        return this.detailedThriftProductModel
+                .find()
+                .populate('storeLink')
+                .sort({"_id": -1}) 
+                .exec()
+                .then((products) => {
+                    if(products === null) return new ProductError({code: "no-items"})
+                    return products.map((product) =>{
+                        //Remapping product to entity to avoid extra fields
+                        return new DetailedThriftProductEntity({
+                            id: product.id,
+                            name: product.name,
+                            price: product.price,
+                            originalPrice: product.originalPrice,
+                            pictures: product.pictures,
+                            sizeChart: product.sizeChart,
+                            storeLink: product.storeLink
+                        })
+                    })
+                })
+                .catch((err) =>{
+                    return new ProductError({code: "unknown"})
+                })
+             
     }
 }
 
