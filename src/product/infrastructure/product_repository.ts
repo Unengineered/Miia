@@ -19,6 +19,8 @@ export default class ProductRepository implements IProductRepository{
    }
 
     async saveProduct(product: DetailedThriftProductEntity): Promise<DetailedThriftProductEntity | ProductError>{
+
+        // Removed need for SQL database
         // const SQLEntry = await this.prismaClient.summaryProduct.create({
         //     data: {
         //         name: product.name,
@@ -104,62 +106,62 @@ export default class ProductRepository implements IProductRepository{
      * have been listed below.
      */
 
-     async getProductsByDate(): Promise<SummaryThriftProduct[] | ProductError>{
-        return this.prismaClient.summaryProduct
-            .findMany({
-                orderBy: [
-                    {
-                        createdAt: 'desc'
-                    }
-                ]
-            })
-            .then((products) => {
-                return products.map((product) => {
-                    return new SummaryThriftProduct({
-                        id: product.id,
-                        name: product.name,
-                        thumbnail: product.thumbnail
-                    })
-                })
-            })
-            .catch((err) => {
-                console.log("SQL ERROR")
-                console.log(err)
-                return new ProductError({code: "unknown"})
-            })
-    }
+    //  async getProductsByDate(): Promise<SummaryThriftProduct[] | ProductError>{
+    //     return this.prismaClient.summaryProduct
+    //         .findMany({
+    //             orderBy: [
+    //                 {
+    //                     createdAt: 'desc'
+    //                 }
+    //             ]
+    //         })
+    //         .then((products) => {
+    //             return products.map((product) => {
+    //                 return new SummaryThriftProduct({
+    //                     id: product.id,
+    //                     name: product.name,
+    //                     thumbnail: product.thumbnail
+    //                 })
+    //             })
+    //         })
+    //         .catch((err) => {
+    //             console.log("SQL ERROR")
+    //             console.log(err)
+    //             return new ProductError({code: "unknown"})
+    //         })
+    // }
 
-    async getDetailedProduct(id: string): Promise<DetailedThriftProductEntity | ProductError> {
-        return this.detailedThriftProductModel
-                .findById(id)
-                .populate('storeLink')
-                .exec()
-                .then((product) => {
-                    if(product === null) 
-                        return new ProductError({code: "no-product"})
-                    else
-                        return new DetailedThriftProductEntity({
-                            id: product.id,
-                            name: product.name,
-                            price: product.price,
-                            originalPrice: product.originalPrice,
-                            pictures: product.pictures,
-                            sizeChart: product.sizeChart.map((chartValue) =>{
-                                return {key: chartValue.key, value: chartValue.value}
-                            }),
-                            storeLink: (product.storeLink instanceof StoreLinkEntity) ?  new StoreLinkEntity(
-                                {
-                                    id: product.storeLink.id,
-                                    name: product.storeLink.name,
-                                    thumbnail: product.storeLink.thumbnail,
-                                    instagram: product.storeLink.instagram
-                                } 
-                            ) : product.storeLink
-                        })
-                }).
-                catch((error) => {
-                    return new ProductError({code: "unknown"})
-                })
-    }
+    // async getDetailedProduct(id: string): Promise<DetailedThriftProductEntity | ProductError> {
+    //     return this.detailedThriftProductModel
+    //             .findById(id)
+    //             .populate('storeLink')
+    //             .exec()
+    //             .then((product) => {
+    //                 if(product === null) 
+    //                     return new ProductError({code: "no-product"})
+    //                 else
+    //                     return new DetailedThriftProductEntity({
+    //                         id: product.id,
+    //                         name: product.name,
+    //                         price: product.price,
+    //                         originalPrice: product.originalPrice,
+    //                         pictures: product.pictures,
+    //                         sizeChart: product.sizeChart.map((chartValue) =>{
+    //                             return {key: chartValue.key, value: chartValue.value}
+    //                         }),
+    //                         storeLink: (product.storeLink instanceof StoreLinkEntity) ?  new StoreLinkEntity(
+    //                             {
+    //                                 id: product.storeLink.id,
+    //                                 name: product.storeLink.name,
+    //                                 thumbnail: product.storeLink.thumbnail,
+    //                                 instagram: product.storeLink.instagram
+    //                             } 
+    //                         ) : product.storeLink
+    //                     })
+    //             }).
+    //             catch((error) => {
+    //                 return new ProductError({code: "unknown"})
+    //             })
+    // }
 }
 
