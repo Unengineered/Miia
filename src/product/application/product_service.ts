@@ -1,7 +1,6 @@
 import { DetailedThriftProductEntity } from "../domain/entities/detailed_thrift_product";
 import ProductError from "../domain/errors/product_error";
 import IProductRepository from "../domain/i_product_repository";
-import SummaryThriftProduct from "../domain/entities/summary_thrift_product";
 import WebsocketResponse from "../../core/models/websocket_response";
 import WebsocketRequest from "../../core/models/websocket_request";
 import WebsocketMessage from "../../core/models/websocket_message";
@@ -14,16 +13,68 @@ export default class ProductService {
         this.productRepo = productRepo
     }
 
-    async getDetailedThriftProducts(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
-        //TODO: Handle type error of parsed id string
-        //TODO: remove requirement for id
-
+    async getDetailedThriftProducts(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)> {
         /**
-         * TODO: 
-         * [] - check for store_id param
-         * [] - return products only from that store if present
-         * [] - return all products if no store_id is present
+         * Combine the getDetailedProduct and getProductByStore functions.
+         * If store_id is missing, send all the products using productRepo.getDetailedProductsByDate.
+         * If store_id is present, send all products from that store using productRepo.getDetailedProductsByStore.
          */
+        throw new ProductError({code: "unimplimented"})
+    }
+
+    async putProduct(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
+        try{
+            return this.productRepo.saveProduct(DetailedThriftProductEntity.forSaving({
+                name: request.body["name"] as string,
+                price: request.body["price"] as number,
+                originalPrice: request.body["originalPrice"] as number,
+                pictures: request.body["pictures"] as string[],
+                sizeChart: request.body["sizeChart"] as {key: string, value: string}[],
+                storeLink: request.body["storeLink"] as string
+            }))
+            .then((result) => {
+                if(result instanceof ProductError){
+                    return [
+                        new WebsocketResponse({
+                            responseId: request.requestId,
+                            statusCode: 400,
+                            statusMessage: "ERROR",
+                            headers: {},
+                            body: {
+                                "error" : result.code
+                            }
+                        })
+                    ]
+                }else{
+                    const product = result as DetailedThriftProductEntity
+                    return [
+                        new WebsocketResponse({
+                            responseId: request.requestId,
+                            statusCode: 200,
+                            statusMessage: "OK",
+                            headers: {},
+                            body: product.toJson()
+                        })
+                    ]
+                }
+            })
+        }catch (error){
+            return [
+                new WebsocketResponse({
+                    responseId: request.requestId,
+                    statusCode: 400,
+                    statusMessage: "ERROR",
+                    headers: {},
+                    body: {
+                        "error" : error
+                    }
+                })
+            ]
+        }
+    }
+
+    //Comment this function out once getDetailedThriftProducts is complete
+    private async getDetailedProduct(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
 
         const id = QueryString.parseUrl(request.url).query['id'] as string
 
@@ -95,8 +146,8 @@ export default class ProductService {
         })
     }
 
-    //TODO: Rename to getDetailedProductsByStore
-    async getProductByStore(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
+    //Comment this function out once getDetailedThriftProducts is complete
+    private async getProductByStore(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
 
         const storeId =  QueryString.parseUrl(request.url).query['store_id'] as string
 
@@ -135,56 +186,6 @@ export default class ProductService {
         })
     }
 
-    async putProduct(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
-        try{
-            return this.productRepo.saveProduct(DetailedThriftProductEntity.forSaving({
-                name: request.body["name"] as string,
-                price: request.body["price"] as number,
-                originalPrice: request.body["originalPrice"] as number,
-                pictures: request.body["pictures"] as string[],
-                sizeChart: request.body["sizeChart"] as {key: string, value: string}[],
-                storeLink: request.body["storeLink"] as string
-            }))
-            .then((result) => {
-                if(result instanceof ProductError){
-                    return [
-                        new WebsocketResponse({
-                            responseId: request.requestId,
-                            statusCode: 400,
-                            statusMessage: "ERROR",
-                            headers: {},
-                            body: {
-                                "error" : result.code
-                            }
-                        })
-                    ]
-                }else{
-                    const product = result as DetailedThriftProductEntity
-                    return [
-                        new WebsocketResponse({
-                            responseId: request.requestId,
-                            statusCode: 200,
-                            statusMessage: "OK",
-                            headers: {},
-                            body: product.toJson()
-                        })
-                    ]
-                }
-            })
-        }catch (error){
-            return [
-                new WebsocketResponse({
-                    responseId: request.requestId,
-                    statusCode: 400,
-                    statusMessage: "ERROR",
-                    headers: {},
-                    body: {
-                        "error" : error
-                    }
-                })
-            ]
-        }
-    }
 
     /**
      * Some functions won't be required after
@@ -192,46 +193,46 @@ export default class ProductService {
      * have been listed below.
      */
 
-     async getSummaryProducts(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
-        return this.productRepo.getProductsByDate()
-            .then((result) => {
-                if(result instanceof ProductError){
-                    return [
-                        new WebsocketResponse({
-                            responseId: request.requestId,
-                            statusCode: 400,
-                            statusMessage: "ERROR",
-                            headers: {},
-                            body: {
-                                error: result.code
-                            }
-                        })
-                    ]
-                }
-                const products = result as SummaryThriftProduct[]
-                return [
-                    new WebsocketResponse({
-                        responseId: request.requestId,
-                        statusCode: 200,
-                        statusMessage: "OK",
-                        headers: {},
-                        body: {
-                            products: products.map((product) => product.toJson())
-                        }
-                    })]
-            })
-            .catch((error) =>{
-                return [
-                    new WebsocketResponse({
-                        responseId: request.requestId,
-                        statusCode: 400,
-                        statusMessage: "ERROR",
-                        headers: {},
-                        body: {
-                            error: error.code
-                        }
-                    })
-                ]
-            })
-    }
+    //  async getSummaryProducts(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
+    //     return this.productRepo.getProductsByDate()
+    //         .then((result) => {
+    //             if(result instanceof ProductError){
+    //                 return [
+    //                     new WebsocketResponse({
+    //                         responseId: request.requestId,
+    //                         statusCode: 400,
+    //                         statusMessage: "ERROR",
+    //                         headers: {},
+    //                         body: {
+    //                             error: result.code
+    //                         }
+    //                     })
+    //                 ]
+    //             }
+    //             const products = result as SummaryThriftProduct[]
+    //             return [
+    //                 new WebsocketResponse({
+    //                     responseId: request.requestId,
+    //                     statusCode: 200,
+    //                     statusMessage: "OK",
+    //                     headers: {},
+    //                     body: {
+    //                         products: products.map((product) => product.toJson())
+    //                     }
+    //                 })]
+    //         })
+    //         .catch((error) =>{
+    //             return [
+    //                 new WebsocketResponse({
+    //                     responseId: request.requestId,
+    //                     statusCode: 400,
+    //                     statusMessage: "ERROR",
+    //                     headers: {},
+    //                     body: {
+    //                         error: error.code
+    //                     }
+    //                 })
+    //             ]
+    //         })
+    // }
 }
