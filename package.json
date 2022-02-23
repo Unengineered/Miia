@@ -28,7 +28,7 @@
     "mocha": "^9.2.0",
     "mongodb-memory-server": "^8.3.0",
     "nodemon": "^2.0.15",
-    "prisma": "^3.9.2",
+    "prisma": "^3.10.0",
     "sinon": "^13.0.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5"

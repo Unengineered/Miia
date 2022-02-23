@@ -39,44 +39,30 @@ describe("PRODUCT CONTROLLER", function () {
                 statusMessage: "OK",
                 headers: {},
                 body: {
-                    "detailed_thrift_products": {
-                        type: 'array',
-                        nullable: false,
-                        object_types: [
-                            {
-                                type: 'object',
-                                nullable: false,
-                                properties: {
-                                    "name": { type: 'string', nullable: true },
-                                    "price": { type: 'number' },
-                                    "pictures": { type: 'array', object_types: [{ type: 'string' }] },
-                                    "original_price": { type: 'number', nullable: true },
-                                    "size_chart": {
-                                        type: 'array',
-                                        object_types: [{
-                                            type: 'array',
-                                            properties: {
-                                                "key": { type: 'string' },
-                                                "value": { type: 'string' }
-                                            }
-
-                                        }
-
-                                        ]
-                                    },
-                                    "store_link": {
-                                        type: 'object',
-                                        properties: {
-                                            "id": { type: 'string' },
-                                            "name": { type: 'string' },
-                                            "thumbnail": { type: 'string' },
-                                            "instagram": { type: 'string' }
-                                        }
-                                    }
+                    "detailed_thrift_products": [
+                        {
+                            "name": "skirt",
+                            "price": 234,
+                            "original_price": 3400,
+                            "pictures": [
+                                "djfjjkkkkk",
+                                "dkksksjnnmm"
+                            ],
+                            "size_chart": [
+                                {
+                                    "length": "2",
+                                    "seam": "loose"
                                 }
+                            ],
+                            "store_link": {
+                                "id": "1",
+                                "name": "eva thrift",
+                                "thumbnail": "blah blah",
+                                "instagram": "instagramlink"
                             }
-                        ]
-                    }
+                        }
+                    ]
+
                 }
             })
         ])
@@ -109,44 +95,30 @@ describe("PRODUCT CONTROLLER", function () {
                         statusMessage: "OK",
                         headers: {},
                         body: {
-                            "detailed_thrift_products": {
-                                type: 'array',
-                                nullable: false,
-                                object_types: [
-                                    {
-                                        type: 'object',
-                                        nullable: false,
-                                        properties: {
-                                            "name": { type: 'string', nullable: true },
-                                            "price": { type: 'number' },
-                                            "pictures": { type: 'array', object_types: [{ type: 'string' }] },
-                                            "original_price": { type: 'number', nullable: true },
-                                            "size_chart": {
-                                                type: 'array',
-                                                object_types: [{
-                                                    type: 'array',
-                                                    properties: {
-                                                        "key": { type: 'string' },
-                                                        "value": { type: 'string' }
-                                                    }
-
-                                                }
-
-                                                ]
-                                            },
-                                            "store_link": {
-                                                type: 'object',
-                                                properties: {
-                                                    "id": { type: 'string' },
-                                                    "name": { type: 'string' },
-                                                    "thumbnail": { type: 'string' },
-                                                    "instagram": { type: 'string' }
-                                                }
-                                            }
+                            "detailed_thrift_products": [
+                                {
+                                    "name": "skirt",
+                                    "price": 234,
+                                    "original_price": 3400,
+                                    "pictures": [
+                                        "djfjjkkkkk",
+                                        "dkksksjnnmm"
+                                    ],
+                                    "size_chart": [
+                                        {
+                                            "length": "2",
+                                            "seam": "loose"
                                         }
+                                    ],
+                                    "store_link": {
+                                        "id": "1",
+                                        "name": "eva thrift",
+                                        "thumbnail": "blah blah",
+                                        "instagram": "instagramlink"
                                     }
-                                ]
-                            }
+                                }
+                            ]
+
                         }
                     })
                 }
