@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const detailed_thrift_product_1 = require("../domain/entities/detailed_thrift_product");
 const product_error_1 = __importDefault(require("../domain/errors/product_error"));
-const summary_thrift_product_1 = __importDefault(require("../domain/entities/summary_thrift_product"));
 class ProductRepository {
     constructor({ mongoDbConnection, prismaClient }) {
         this.mongoDbConnection = mongoDbConnection;
@@ -24,6 +23,7 @@ class ProductRepository {
     }
     saveProduct(product) {
         return __awaiter(this, void 0, void 0, function* () {
+            // Removed need for SQL database
             // const SQLEntry = await this.prismaClient.summaryProduct.create({
             //     data: {
             //         name: product.name,
@@ -100,69 +100,6 @@ class ProductRepository {
                 });
             })
                 .catch((err) => {
-                return new product_error_1.default({ code: "unknown" });
-            });
-        });
-    }
-    /**
-     * Some functions won't be required after
-     * moving away from the SQL databases, they
-     * have been listed below.
-     */
-    getProductsByDate() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.prismaClient.summaryProduct
-                .findMany({
-                orderBy: [
-                    {
-                        createdAt: 'desc'
-                    }
-                ]
-            })
-                .then((products) => {
-                return products.map((product) => {
-                    return new summary_thrift_product_1.default({
-                        id: product.id,
-                        name: product.name,
-                        thumbnail: product.thumbnail
-                    });
-                });
-            })
-                .catch((err) => {
-                console.log("SQL ERROR");
-                console.log(err);
-                return new product_error_1.default({ code: "unknown" });
-            });
-        });
-    }
-    getDetailedProduct(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.detailedThriftProductModel
-                .findById(id)
-                .populate('storeLink')
-                .exec()
-                .then((product) => {
-                if (product === null)
-                    return new product_error_1.default({ code: "no-product" });
-                else
-                    return new detailed_thrift_product_1.DetailedThriftProductEntity({
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        originalPrice: product.originalPrice,
-                        pictures: product.pictures,
-                        sizeChart: product.sizeChart.map((chartValue) => {
-                            return { key: chartValue.key, value: chartValue.value };
-                        }),
-                        storeLink: (product.storeLink instanceof detailed_thrift_product_1.StoreLinkEntity) ? new detailed_thrift_product_1.StoreLinkEntity({
-                            id: product.storeLink.id,
-                            name: product.storeLink.name,
-                            thumbnail: product.storeLink.thumbnail,
-                            instagram: product.storeLink.instagram
-                        }) : product.storeLink
-                    });
-            }).
-                catch((error) => {
                 return new product_error_1.default({ code: "unknown" });
             });
         });

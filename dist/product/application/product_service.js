@@ -20,12 +20,16 @@ class ProductService {
     constructor({ productRepo }) {
         this.productRepo = productRepo;
     }
-    getDetailedProduct(request) {
+    getDetailedThriftProducts(request) {
         return __awaiter(this, void 0, void 0, function* () {
-            //TODO: Handle type error of parsed id string
-            const id = query_string_1.default.parseUrl(request.url).query['id'];
-            if (id === null) {
-                return yield this.productRepo.getDetailedProductsByDate()
+            /**
+             * Combine the getDetailedProduct and getProductByStore functions.
+             * If store_id is missing, send all the products using productRepo.getDetailedProductsByDate.
+             * If store_id is present, send all products from that store using productRepo.getDetailedProductsByStore.
+             */
+            const storeId = query_string_1.default.parseUrl(request.url).query["store_id"];
+            if (storeId) {
+                return yield this.productRepo.getDetailedProductsByStore(storeId)
                     .then((result) => {
                     if (result instanceof product_error_1.default) {
                         return [
@@ -56,92 +60,14 @@ class ProductService {
                     }
                 });
             }
-            return yield this.productRepo.getDetailedProduct(id)
+            return yield this.productRepo.getDetailedProductsByDate()
                 .then((result) => {
                 if (result instanceof product_error_1.default) {
                     return [
                         new websocket_response_1.default({
                             responseId: request.requestId,
-                            statusCode: 400,
-                            statusMessage: "ERROR",
-                            headers: {},
-                            body: {
-                                error: result.code
-                            }
-                        })
-                    ];
-                }
-                else {
-                    const product = result;
-                    return [new websocket_response_1.default({
-                            responseId: request.requestId,
-                            statusCode: 200,
-                            statusMessage: "OK",
-                            headers: {},
-                            body: {
-                                "summary_thrift_products": product.toJson()
-                            }
-                        })];
-                }
-            });
-        });
-    }
-    getSummaryProducts(request) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.productRepo.getProductsByDate()
-                .then((result) => {
-                if (result instanceof product_error_1.default) {
-                    return [
-                        new websocket_response_1.default({
-                            responseId: request.requestId,
-                            statusCode: 400,
-                            statusMessage: "ERROR",
-                            headers: {},
-                            body: {
-                                error: result.code
-                            }
-                        })
-                    ];
-                }
-                const products = result;
-                return [
-                    new websocket_response_1.default({
-                        responseId: request.requestId,
-                        statusCode: 200,
-                        statusMessage: "OK",
-                        headers: {},
-                        body: {
-                            products: products.map((product) => product.toJson())
-                        }
-                    })
-                ];
-            })
-                .catch((error) => {
-                return [
-                    new websocket_response_1.default({
-                        responseId: request.requestId,
-                        statusCode: 400,
-                        statusMessage: "ERROR",
-                        headers: {},
-                        body: {
-                            error: error.code
-                        }
-                    })
-                ];
-            });
-        });
-    }
-    getProductByStore(request) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const storeId = query_string_1.default.parseUrl(request.url).query['store_id'];
-            return yield this.productRepo.getDetailedProductsByStore(storeId)
-                .then((result) => {
-                if (result instanceof product_error_1.default) {
-                    return [
-                        new websocket_response_1.default({
-                            responseId: request.requestId,
-                            statusCode: 400,
-                            statusMessage: "ERROR",
+                            statusCode: 404,
+                            statusMessage: "NOT_FOUND",
                             headers: {},
                             body: {
                                 error: result.code
@@ -218,6 +144,111 @@ class ProductService {
                     })
                 ];
             }
+        });
+    }
+    //Comment this function out once getDetailedThriftProducts is complete
+    // private async getDetailedProduct(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
+    //     const id = QueryString.parseUrl(request.url).query['id'] as string
+    //     if (id === null) {
+    //         return await this.productRepo.getDetailedProductsByDate()
+    //             .then((result) => {
+    //                 if (result instanceof ProductError) {
+    //                     return [
+    //                         new WebsocketResponse(
+    //                             {
+    //                                 responseId: request.requestId,
+    //                                 statusCode: 404,
+    //                                 statusMessage: "NOT_FOUND",
+    //                                 headers: {},
+    //                                 body: {
+    //                                     error: result.code
+    //                                 }
+    //                             }
+    //                         )
+    //                     ]
+    //                 } else {
+    //                     const products = result as DetailedThriftProductEntity[]
+    //                     return [
+    //                         new WebsocketResponse(
+    //                             {
+    //                                 responseId: request.requestId,
+    //                                 statusCode: 200,
+    //                                 statusMessage: "OK",
+    //                                 headers: {},
+    //                                 body: {
+    //                                     "detailed_thrift_products": products.map((product) => product.toJson())
+    //                                 }
+    //                             }
+    //                         )
+    //                     ]
+    //                 }
+    //             })
+    //     }
+    //     //Comment out this part
+    //     // return await this.productRepo.getDetailedProduct(id)
+    //     //     .then((result) => {
+    //     //         if (result instanceof ProductError) {
+    //     //             return [
+    //     //                 new WebsocketResponse({
+    //     //                     responseId: request.requestId,
+    //     //                     statusCode: 400,
+    //     //                     statusMessage: "ERROR",
+    //     //                     headers: {},
+    //     //                     body: {
+    //     //                         error: result.code
+    //     //                     }
+    //     //                 })
+    //     //             ]
+    //     //         } else {
+    //     //             const product = result as DetailedThriftProductEntity
+    //     //             return [new WebsocketResponse(
+    //     //                 {
+    //     //                     responseId: request.requestId,
+    //     //                     statusCode: 200,
+    //     //                     statusMessage: "OK",
+    //     //                     headers: {},
+    //     //                     body: {
+    //     //                         "summary_thrift_products": product.toJson()
+    //     //                     }
+    //     //                 }
+    //     //             )]
+    //     //         }
+    //     //     })
+    // }
+    //Comment this function out once getDetailedThriftProducts is complete
+    getProductByStore(request) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const storeId = query_string_1.default.parseUrl(request.url).query['store_id'];
+            return yield this.productRepo.getDetailedProductsByStore(storeId)
+                .then((result) => {
+                if (result instanceof product_error_1.default) {
+                    return [
+                        new websocket_response_1.default({
+                            responseId: request.requestId,
+                            statusCode: 400,
+                            statusMessage: "ERROR",
+                            headers: {},
+                            body: {
+                                error: result.code
+                            }
+                        })
+                    ];
+                }
+                else {
+                    const products = result;
+                    return [
+                        new websocket_response_1.default({
+                            responseId: request.requestId,
+                            statusCode: 200,
+                            statusMessage: "OK",
+                            headers: {},
+                            body: {
+                                "detailed_thrift_products": products.map((product) => product.toJson())
+                            }
+                        })
+                    ];
+                }
+            });
         });
     }
 }

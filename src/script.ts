@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import { PrismaClient } from '@prisma/client';
 import { DetailedThriftProductEntity } from './product/domain/entities/detailed_thrift_product';
 import ProductService from './product/application/product_service';
+import WebsocketRequest from './core/models/websocket_request';
 require('dotenv').config()
 //h
 const prod_repo = new ProductRepository({
@@ -10,9 +11,9 @@ const prod_repo = new ProductRepository({
     prismaClient: new PrismaClient()
 })
 
-const prod_service = new ProductService({productRepo : prod_repo})
+const prod_service = new ProductService({ productRepo: prod_repo })
 
-async function func(){
+async function func() {
     // const response = await prod_repo.saveProduct(DetailedThriftProductEntity.forSaving({
     //     name: "TOTAL_TEST",
     //     price: 200,
@@ -46,8 +47,18 @@ async function func(){
     //const response = await prod_repo.getDetailedProduct("62148d1a3fcd9b74df344a32")
 
     //const response = await prod_repo.getDetailedProductsByDate()
-    const response = await prod_repo.getDetailedProductsByStore("62148dbacd944133da8d8ad4")
-    console.log(response)
+    // const response = await prod_repo.getDetailedProductsByStore("62148dbacd944133da8d8ad4")
+    // console.log(response)
+
+    const response = await prod_service.getDetailedThriftProducts(new WebsocketRequest({
+        requestId: "62148dbacd944133da8d8ad4",
+        method: "62148dbacd944133da8d8ad4",
+        // url: "https://www.everythng.in/detailed?store_id=62148f53cd944133da8d8adf",
+        url: "https://www.everythng.in/detailed",
+        headers: "" as any,
+        body: "" as any,
+    }))
+    console.log(JSON.stringify(response))
 }
 
 func()

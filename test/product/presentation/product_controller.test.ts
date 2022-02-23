@@ -26,14 +26,12 @@ describe("PRODUCT CONTROLLER", function () {
     })
 
     this.afterEach(function () {
-        productService.getDetailedProduct.reset()
-        productService.getProductByStore.reset()
-        productService.getSummaryProducts.reset()
+        productService.getDetailedThriftProducts.reset()
         productService.putProduct.reset()
     })
 
     it("should handle successful GET summary request", async function () {
-        productService.getSummaryProducts.resolves(
+        productService.getDetailedThriftProducts.resolves(
             [
                 new WebsocketResponse({
                     responseId: "ID",
@@ -106,7 +104,7 @@ describe("PRODUCT CONTROLLER", function () {
     })
 
     it("should handle GET detailed product request", async function () {
-        productService.getDetailedProduct.resolves([
+        productService.getDetailedThriftProducts.resolves([
             new WebsocketResponse({
                 responseId: "ID",
                 statusCode: 200,

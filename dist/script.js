@@ -17,7 +17,9 @@ const product_repository_1 = __importDefault(require("./product/infrastructure/p
 const mongoose_1 = __importDefault(require("mongoose"));
 const client_1 = require("@prisma/client");
 const product_service_1 = __importDefault(require("./product/application/product_service"));
+const websocket_request_1 = __importDefault(require("./core/models/websocket_request"));
 require('dotenv').config();
+//h
 const prod_repo = new product_repository_1.default({
     mongoDbConnection: mongoose_1.default.createConnection((_a = process.env.MONGO_REMOTE_URI) !== null && _a !== void 0 ? _a : ""),
     prismaClient: new client_1.PrismaClient()
@@ -52,8 +54,17 @@ function func() {
         // }))
         //const response = await prod_repo.getDetailedProduct("62148d1a3fcd9b74df344a32")
         //const response = await prod_repo.getDetailedProductsByDate()
-        const response = yield prod_repo.getDetailedProductsByStore("62148dbacd944133da8d8ad4");
-        console.log(response);
+        // const response = await prod_repo.getDetailedProductsByStore("62148dbacd944133da8d8ad4")
+        // console.log(response)
+        const response = yield prod_service.getDetailedThriftProducts(new websocket_request_1.default({
+            requestId: "62148dbacd944133da8d8ad4",
+            method: "62148dbacd944133da8d8ad4",
+            // url: "https://www.everythng.in/detailed?store_id=62148f53cd944133da8d8adf",
+            url: "https://www.everythng.in/detailed",
+            headers: "",
+            body: "",
+        }));
+        console.log(JSON.stringify(response));
     });
 }
 func();
