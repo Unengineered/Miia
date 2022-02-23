@@ -13,7 +13,7 @@ export default class ProductService {
         this.productRepo = productRepo
     }
 
-    async getDetailedThriftProducts(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)> {
+    async getDetailedThriftProducts(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
         /**
          * Combine the getDetailedProduct and getProductByStore functions.
          * If store_id is missing, send all the products using productRepo.getDetailedProductsByDate.
