@@ -5,7 +5,7 @@ import InterServiceMessage, { SendTo } from '../../../src/core/models/inter_serv
 import WebsocketRequest from '../../../src/core/models/websocket_request'
 import WebsocketResponse from '../../../src/core/models/websocket_response'
 import ProductService from '../../../src/product/application/product_service'
-import { DetailedThriftProductEntity } from '../../../src/product/domain/entities/detailed_thrift_product'
+import { DetailedThriftProductEntity, StoreLinkEntity } from '../../../src/product/domain/entities/detailed_thrift_product'
 import ProductRepository from '../../../src/product/infrastructure/product_repository'
 
 
@@ -28,15 +28,52 @@ describe("PRODUCT SERVICE", function () {
     it("should get detailed products using store_id", async function () {
         productRepository.getDetailedProductsByStore.resolves([
             new DetailedThriftProductEntity({
-                id: "122",
-                name: "NAME",
+                id: "101",
+                name: "Lightning McQueen Tee",
                 price: 200,
                 originalPrice: 5000,
-                pictures: ["url1", "url2"],
+                pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                 sizeChart: [
                     { key: "chest", value: "32" }
                 ],
-                storeLink: "122",
+                storeLink: new StoreLinkEntity({
+                    id: "121",
+                    name: "Akron",
+                    thumbnail: "https://www.everythng.in/",
+                    instagram: "https://www.instagram.com/store"
+                }),
+            }),
+            new DetailedThriftProductEntity({
+                id: "102",
+                name: "Men Solid Muscle Fit Piqu Polo Shirt",
+                price: 700,
+                originalPrice: 5000,
+                pictures: ["https://www.something.com/something", "https://www.something.com/something"],
+                sizeChart: [
+                    { key: "chest", value: "32" }
+                ],
+                storeLink: new StoreLinkEntity({
+                    id: "122",
+                    name: "H&M",
+                    thumbnail: "https://www.everythng.in/",
+                    instagram: "https://www.instagram.com/store"
+                }),
+            }),
+            new DetailedThriftProductEntity({
+                id: "103",
+                name: "Women Green Solid Pure Cotton Corduroy Casual Shirt",
+                price: 1600,
+                originalPrice: 4000,
+                pictures: ["https://www.something.com/something", "https://www.something.com/something"],
+                sizeChart: [
+                    { key: "waist", value: "36" }
+                ],
+                storeLink: new StoreLinkEntity({
+                    id: "123",
+                    name: "H&M",
+                    thumbnail: "https://www.everythng.in/",
+                    instagram: "https://www.instagram.com/store"
+                }),
             })
         ])
 
@@ -44,9 +81,9 @@ describe("PRODUCT SERVICE", function () {
         const response = await productService.getDetailedThriftProducts(new WebsocketRequest({
             requestId: "62148dbacd944133da8d8ad4",
             method: "GET",
-            url: "https://www.everythng.in/detailed?store_id=62148f53cd944133da8d8adf",
-            headers: "" as any,
-            body: "" as any,
+            url: "https://www.everythng.in/products?store_id=62148f53cd944133da8d8adf",
+            headers: {},
+            body: {},
         }))
 
         assert.deepEqual(response, [
@@ -56,19 +93,54 @@ describe("PRODUCT SERVICE", function () {
                 statusMessage: "OK",
                 headers: {},
                 body: {
-                    detailed_thrift_products: [new DetailedThriftProductEntity(
-                        {
+                    detailed_thrift_products: [new DetailedThriftProductEntity({
+                        id: "101",
+                        name: "Lightning McQueen Tee",
+                        price: 200,
+                        originalPrice: 5000,
+                        pictures: ["https://www.something.com/something", "https://www.something.com/something"],
+                        sizeChart: [
+                            { key: "chest", value: "32" }
+                        ],
+                        storeLink: new StoreLinkEntity({
+                            id: "121",
+                            name: "Akron",
+                            thumbnail: "https://www.everythng.in/",
+                            instagram: "https://www.instagram.com/store"
+                        }),
+                    }).toJson(),
+                    new DetailedThriftProductEntity({
+                        id: "102",
+                        name: "Men Solid Muscle Fit Piqu Polo Shirt",
+                        price: 700,
+                        originalPrice: 5000,
+                        pictures: ["https://www.something.com/something", "https://www.something.com/something"],
+                        sizeChart: [
+                            { key: "chest", value: "32" }
+                        ],
+                        storeLink: new StoreLinkEntity({
                             id: "122",
-                            name: "NAME",
-                            price: 200,
-                            originalPrice: 5000,
-                            pictures: ["url1", "url2"],
-                            sizeChart: [
-                                { key: "chest", value: "32" }
-                            ],
-                            storeLink: "122",
-                        }
-                    ).toJson()]
+                            name: "H&M",
+                            thumbnail: "https://www.everythng.in/",
+                            instagram: "https://www.instagram.com/store"
+                        }),
+                    }).toJson(),
+                    new DetailedThriftProductEntity({
+                        id: "103",
+                        name: "Women Green Solid Pure Cotton Corduroy Casual Shirt",
+                        price: 1600,
+                        originalPrice: 4000,
+                        pictures: ["https://www.something.com/something", "https://www.something.com/something"],
+                        sizeChart: [
+                            { key: "waist", value: "36" }
+                        ],
+                        storeLink: new StoreLinkEntity({
+                            id: "123",
+                            name: "H&M",
+                            thumbnail: "https://www.everythng.in/",
+                            instagram: "https://www.instagram.com/store"
+                        }),
+                    }).toJson()]
                 }
             })
         ])
@@ -77,26 +149,52 @@ describe("PRODUCT SERVICE", function () {
     it("should get all detailed products if store_id is not present", async function () {
         productRepository.getDetailedProductsByDate.resolves([
             new DetailedThriftProductEntity({
-                id: "122",
-                name: "NAME",
+                id: "101",
+                name: "Lightning McQueen Tee",
                 price: 200,
                 originalPrice: 5000,
-                pictures: ["url1", "url2"],
+                pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                 sizeChart: [
                     { key: "chest", value: "32" }
                 ],
-                storeLink: "122",
+                storeLink: new StoreLinkEntity({
+                    id: "121",
+                    name: "Akron",
+                    thumbnail: "https://www.everythng.in/",
+                    instagram: "https://www.instagram.com/store"
+                }),
             }),
             new DetailedThriftProductEntity({
-                id: "121",
-                name: "NAME1",
-                price: 300,
-                originalPrice: 10000,
-                pictures: ["url3", "url4"],
+                id: "102",
+                name: "Men Solid Muscle Fit Piqu Polo Shirt",
+                price: 700,
+                originalPrice: 5000,
+                pictures: ["https://www.something.com/something", "https://www.something.com/something"],
+                sizeChart: [
+                    { key: "chest", value: "32" }
+                ],
+                storeLink: new StoreLinkEntity({
+                    id: "122",
+                    name: "H&M",
+                    thumbnail: "https://www.everythng.in/",
+                    instagram: "https://www.instagram.com/store"
+                }),
+            }),
+            new DetailedThriftProductEntity({
+                id: "103",
+                name: "Women Green Solid Pure Cotton Corduroy Casual Shirt",
+                price: 1600,
+                originalPrice: 4000,
+                pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                 sizeChart: [
                     { key: "waist", value: "36" }
                 ],
-                storeLink: "121",
+                storeLink: new StoreLinkEntity({
+                    id: "123",
+                    name: "H&M",
+                    thumbnail: "https://www.everythng.in/",
+                    instagram: "https://www.instagram.com/store"
+                }),
             })
         ])
 
@@ -104,9 +202,9 @@ describe("PRODUCT SERVICE", function () {
         const response = await productService.getDetailedThriftProducts(new WebsocketRequest({
             requestId: "62148dbacd944133da8d8ad4",
             method: "GET",
-            url: "https://www.everythng.in/detailed",
-            headers: "" as any,
-            body: "" as any,
+            url: "https://www.everythng.in/products",
+            headers: {},
+            body: {},
         }))
 
         assert.deepEqual(response, [
@@ -117,55 +215,78 @@ describe("PRODUCT SERVICE", function () {
                 headers: {},
                 body: {
                     detailed_thrift_products: [
-                        new DetailedThriftProductEntity(
-                            {
-                                id: "122",
-                                name: "NAME",
-                                price: 200,
-                                originalPrice: 5000,
-                                pictures: ["url1", "url2"],
-                                sizeChart: [
-                                    { key: "chest", value: "32" }
-                                ],
-                                storeLink: "122",
-                            }
-                        ).toJson(),
                         new DetailedThriftProductEntity({
-                            id: "121",
-                            name: "NAME1",
-                            price: 300,
-                            originalPrice: 10000,
-                            pictures: ["url3", "url4"],
+                            id: "101",
+                            name: "Lightning McQueen Tee",
+                            price: 200,
+                            originalPrice: 5000,
+                            pictures: ["https://www.something.com/something", "https://www.something.com/something"],
+                            sizeChart: [
+                                { key: "chest", value: "32" }
+                            ],
+                            storeLink: new StoreLinkEntity({
+                                id: "121",
+                                name: "Akron",
+                                thumbnail: "https://www.everythng.in/",
+                                instagram: "https://www.instagram.com/store"
+                            }),
+                        }).toJson(),
+                        new DetailedThriftProductEntity({
+                            id: "102",
+                            name: "Men Solid Muscle Fit Piqu Polo Shirt",
+                            price: 700,
+                            originalPrice: 5000,
+                            pictures: ["https://www.something.com/something", "https://www.something.com/something"],
+                            sizeChart: [
+                                { key: "chest", value: "32" }
+                            ],
+                            storeLink: new StoreLinkEntity({
+                                id: "122",
+                                name: "H&M",
+                                thumbnail: "https://www.everythng.in/",
+                                instagram: "https://www.instagram.com/store"
+                            }),
+                        }).toJson(),
+                        new DetailedThriftProductEntity({
+                            id: "103",
+                            name: "Women Green Solid Pure Cotton Corduroy Casual Shirt",
+                            price: 1600,
+                            originalPrice: 4000,
+                            pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                             sizeChart: [
                                 { key: "waist", value: "36" }
                             ],
-                            storeLink: "121",
-                        }
-                        ).toJson()
+                            storeLink: new StoreLinkEntity({
+                                id: "123",
+                                name: "H&M",
+                                thumbnail: "https://www.everythng.in/",
+                                instagram: "https://www.instagram.com/store"
+                            }),
+                        }).toJson()
                     ]
                 }
             })
         ])
     })
 
-    // it("should get list of summary products", async function () {
-
-    // })
     it("should save a product", async function () {
         productRepository.saveProduct.resolves(
-            new DetailedThriftProductEntity(
-                {
-                    id: "122",
-                    name: "NAME",
-                    price: 200,
-                    originalPrice: 5000,
-                    pictures: ["url1", "url2"],
-                    sizeChart: [
-                        { key: "chest", value: "32" }
-                    ],
-                    storeLink: "122",
-                }
-            )
+            new DetailedThriftProductEntity({
+                id: "103",
+                name: "Women Green Solid Pure Cotton Corduroy Casual Shirt",
+                price: 1600,
+                originalPrice: 4000,
+                pictures: ["https://www.something.com/something", "https://www.something.com/something"],
+                sizeChart: [
+                    { key: "waist", value: "36" }
+                ],
+                storeLink: new StoreLinkEntity({
+                    id: "121",
+                    name: "Akron",
+                    thumbnail: "https://www.everythng.in/",
+                    instagram: "https://www.instagram.com/store"
+                })
+            })
         )
 
 
@@ -174,9 +295,9 @@ describe("PRODUCT SERVICE", function () {
                 {
                     requestId: "62148dbacd944133da8d8ad4",
                     method: "GET",
-                    url: "https://www.everythng.in/detailed",
-                    headers: "" as any,
-                    body: "" as any,
+                    url: "https://www.everythng.in/products",
+                    headers: {},
+                    body: {},
                 }
             )
         )
@@ -187,19 +308,23 @@ describe("PRODUCT SERVICE", function () {
                 statusCode: 200,
                 statusMessage: "OK",
                 headers: {},
-                body: new DetailedThriftProductEntity(
-                    {
-                        id: "122",
-                        name: "NAME",
-                        price: 200,
-                        originalPrice: 5000,
-                        pictures: ["url1", "url2"],
-                        sizeChart: [
-                            { key: "chest", value: "32" }
-                        ],
-                        storeLink: "122",
-                    }
-                ).toJson()
+                body: new DetailedThriftProductEntity({
+                    id: "103",
+                    name: "Women Green Solid Pure Cotton Corduroy Casual Shirt",
+                    price: 1600,
+                    originalPrice: 4000,
+                    pictures: ["https://www.something.com/something", "https://www.something.com/something"],
+                    sizeChart: [
+                        { key: "waist", value: "36" }
+                    ],
+                    storeLink: new StoreLinkEntity({
+                        id: "121",
+                        name: "Akron",
+                        thumbnail: "https://www.everythng.in/",
+                        instagram: "https://www.instagram.com/store"
+                    })
+                })
+                    .toJson()
             })
         ])
     })
