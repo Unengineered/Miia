@@ -14,7 +14,7 @@ import ProductError from '../../../src/product/domain/errors/product_error'
 
 
 // //TODO (yashraj)
- describe.skip("PRODUCT REPOSITORY", function () {
+ describe("PRODUCT REPOSITORY", function () {
 
 
     var mongod: MongoMemoryServer
