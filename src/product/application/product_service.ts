@@ -19,46 +19,116 @@ export default class ProductService {
          * If store_id is missing, send all the products using productRepo.getDetailedProductsByDate.
          * If store_id is present, send all products from that store using productRepo.getDetailedProductsByStore.
          */
-        throw new ProductError({code: "unimplimented"})
+        const storeId = QueryString.parseUrl(request.url).query["store_id"] as string
+
+        if (storeId) {
+            return await this.productRepo.getDetailedProductsByStore(storeId)
+                .then((result) => {
+                    if (result instanceof ProductError) {
+                        return [
+                            new WebsocketResponse(
+                                {
+                                    responseId: request.requestId,
+                                    statusCode: 400,
+                                    statusMessage: "ERROR",
+                                    headers: {},
+                                    body: {
+                                        error: result.code
+                                    }
+                                }
+                            )
+                        ]
+                    } else {
+                        const products = result as DetailedThriftProductEntity[]
+                        return [
+                            new WebsocketResponse(
+                                {
+                                    responseId: request.requestId,
+                                    statusCode: 200,
+                                    statusMessage: "OK",
+                                    headers: {},
+                                    body: {
+                                        "detailed_thrift_products": products.map((product) => product.toJson())
+                                    }
+                                }
+                            )
+                        ]
+                    }
+                })
+        }
+        return await this.productRepo.getDetailedProductsByDate()
+            .then((result) => {
+                if (result instanceof ProductError) {
+                    return [
+                        new WebsocketResponse(
+                            {
+                                responseId: request.requestId,
+                                statusCode: 404,
+                                statusMessage: "NOT_FOUND",
+                                headers: {},
+                                body: {
+                                    error: result.code
+                                }
+                            }
+                        )
+                    ]
+                } else {
+                    const products = result as DetailedThriftProductEntity[]
+                    return [
+                        new WebsocketResponse(
+                            {
+                                responseId: request.requestId,
+                                statusCode: 200,
+                                statusMessage: "OK",
+                                headers: {},
+                                body: {
+                                    "detailed_thrift_products": products.map((product) => product.toJson())
+                                }
+                            }
+                        )
+                    ]
+                }
+            })
+
     }
 
     async putProduct(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
-        try{
+        try {
             return this.productRepo.saveProduct(DetailedThriftProductEntity.forSaving({
                 name: request.body["name"] as string,
                 price: request.body["price"] as number,
                 originalPrice: request.body["originalPrice"] as number,
                 pictures: request.body["pictures"] as string[],
-                sizeChart: request.body["sizeChart"] as {key: string, value: string}[],
+                sizeChart: request.body["sizeChart"] as { key: string, value: string }[],
                 storeLink: request.body["storeLink"] as string
             }))
-            .then((result) => {
-                if(result instanceof ProductError){
-                    return [
-                        new WebsocketResponse({
-                            responseId: request.requestId,
-                            statusCode: 400,
-                            statusMessage: "ERROR",
-                            headers: {},
-                            body: {
-                                "error" : result.code
-                            }
-                        })
-                    ]
-                }else{
-                    const product = result as DetailedThriftProductEntity
-                    return [
-                        new WebsocketResponse({
-                            responseId: request.requestId,
-                            statusCode: 200,
-                            statusMessage: "OK",
-                            headers: {},
-                            body: product.toJson()
-                        })
-                    ]
-                }
-            })
-        }catch (error){
+                .then((result) => {
+                    if (result instanceof ProductError) {
+                        return [
+                            new WebsocketResponse({
+                                responseId: request.requestId,
+                                statusCode: 400,
+                                statusMessage: "ERROR",
+                                headers: {},
+                                body: {
+                                    "error": result.code
+                                }
+                            })
+                        ]
+                    } else {
+                        const product = result as DetailedThriftProductEntity
+                        return [
+                            new WebsocketResponse({
+                                responseId: request.requestId,
+                                statusCode: 200,
+                                statusMessage: "OK",
+                                headers: {},
+                                body: product.toJson()
+                            })
+                        ]
+                    }
+                })
+        } catch (error) {
             return [
                 new WebsocketResponse({
                     responseId: request.requestId,
@@ -66,7 +136,7 @@ export default class ProductService {
                     statusMessage: "ERROR",
                     headers: {},
                     body: {
-                        "error" : error
+                        "error": error
                     }
                 })
             ]
@@ -78,10 +148,10 @@ export default class ProductService {
 
     //     const id = QueryString.parseUrl(request.url).query['id'] as string
 
-    //     if(id === null){
+    //     if (id === null) {
     //         return await this.productRepo.getDetailedProductsByDate()
-    //             .then((result)=>{
-    //                 if(result instanceof ProductError){
+    //             .then((result) => {
+    //                 if (result instanceof ProductError) {
     //                     return [
     //                         new WebsocketResponse(
     //                             {
@@ -91,11 +161,11 @@ export default class ProductService {
     //                                 headers: {},
     //                                 body: {
     //                                     error: result.code
-    //                                 } 
+    //                                 }
     //                             }
     //                         )
     //                     ]
-    //                 }else{
+    //                 } else {
     //                     const products = result as DetailedThriftProductEntity[]
     //                     return [
     //                         new WebsocketResponse(
@@ -115,75 +185,75 @@ export default class ProductService {
     //     }
 
     //     //Comment out this part
-    //     return await this.productRepo.getDetailedProduct(id)
-    //         .then((result) =>{
-    //             if(result instanceof ProductError){
-    //                 return [
-    //                     new WebsocketResponse({
-    //                         responseId: request.requestId,
-    //                         statusCode: 400,
-    //                         statusMessage: "ERROR",
-    //                         headers: {},
-    //                         body: {
-    //                             error: result.code
-    //                         }
-    //                     })
-    //                 ]
-    //             }else{
-    //                 const product = result as DetailedThriftProductEntity
-    //                 return [new WebsocketResponse(
-    //                     {
-    //                         responseId: request.requestId,
-    //                         statusCode: 200,
-    //                         statusMessage: "OK",
-    //                         headers: {},
-    //                         body: {
-    //                             "summary_thrift_products": product.toJson()
-    //                         }
-    //                     }
-    //                 )]
-    //             }
-    //     })
+    //     // return await this.productRepo.getDetailedProduct(id)
+    //     //     .then((result) => {
+    //     //         if (result instanceof ProductError) {
+    //     //             return [
+    //     //                 new WebsocketResponse({
+    //     //                     responseId: request.requestId,
+    //     //                     statusCode: 400,
+    //     //                     statusMessage: "ERROR",
+    //     //                     headers: {},
+    //     //                     body: {
+    //     //                         error: result.code
+    //     //                     }
+    //     //                 })
+    //     //             ]
+    //     //         } else {
+    //     //             const product = result as DetailedThriftProductEntity
+    //     //             return [new WebsocketResponse(
+    //     //                 {
+    //     //                     responseId: request.requestId,
+    //     //                     statusCode: 200,
+    //     //                     statusMessage: "OK",
+    //     //                     headers: {},
+    //     //                     body: {
+    //     //                         "summary_thrift_products": product.toJson()
+    //     //                     }
+    //     //                 }
+    //     //             )]
+    //     //         }
+    //     //     })
     // }
 
     //Comment this function out once getDetailedThriftProducts is complete
     // private async getProductByStore(request: WebsocketRequest): Promise<(WebsocketResponse | WebsocketMessage)[]> {
 
-    //     const storeId =  QueryString.parseUrl(request.url).query['store_id'] as string
+    //     const storeId = QueryString.parseUrl(request.url).query['store_id'] as string
 
     //     return await this.productRepo.getDetailedProductsByStore(storeId)
-    //     .then((result)=>{
-    //         if(result instanceof ProductError){
-    //             return [
-    //                 new WebsocketResponse(
-    //                     {
-    //                         responseId: request.requestId,
-    //                         statusCode: 400,
-    //                         statusMessage: "ERROR",
-    //                         headers: {},
-    //                         body: {
-    //                             error: result.code
-    //                         } 
-    //                     }
-    //                 )
-    //             ]
-    //         }else{
-    //             const products = result as DetailedThriftProductEntity[]
-    //             return [
-    //                 new WebsocketResponse(
-    //                     {
-    //                         responseId: request.requestId,
-    //                         statusCode: 200,
-    //                         statusMessage: "OK",
-    //                         headers: {},
-    //                         body: {
-    //                             "detailed_thrift_products": products.map((product) => product.toJson())
+    //         .then((result) => {
+    //             if (result instanceof ProductError) {
+    //                 return [
+    //                     new WebsocketResponse(
+    //                         {
+    //                             responseId: request.requestId,
+    //                             statusCode: 400,
+    //                             statusMessage: "ERROR",
+    //                             headers: {},
+    //                             body: {
+    //                                 error: result.code
+    //                             }
     //                         }
-    //                     }
-    //                 )
-    //             ]
-    //         }
-    //     })
+    //                     )
+    //                 ]
+    //             } else {
+    //                 const products = result as DetailedThriftProductEntity[]
+    //                 return [
+    //                     new WebsocketResponse(
+    //                         {
+    //                             responseId: request.requestId,
+    //                             statusCode: 200,
+    //                             statusMessage: "OK",
+    //                             headers: {},
+    //                             body: {
+    //                                 "detailed_thrift_products": products.map((product) => product.toJson())
+    //                             }
+    //                         }
+    //                     )
+    //                 ]
+    //             }
+    //         })
     // }
 
 

@@ -65,7 +65,8 @@
 //             pictures: ["url1", "url2"],
 //             sizeChart: [
 //                 { key: "chest", value: "32" }
-//             ]
+//             ],
+//             storeLink:"12345"
 //         }))
 //         const count = await productModel.countDocuments({ name: "NAME" });
 //         assert.equal(count, 1)

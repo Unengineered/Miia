@@ -77,7 +77,7 @@ describe("PRODUCT CONTROLLER", function () {
                     {
                         requestId: "ID",
                         method: "GET",
-                        url: "https://www.everythng.in/?id=2",
+                        url: "https://www.everythng.in/product/",
                         headers: {},
                         body: {}
                     }
@@ -166,12 +166,13 @@ describe("PRODUCT CONTROLLER", function () {
                         body: {
                             "name": "TEST_DOC",
                             "price": 500,
-                            "originalPrice": 4000,
+                            "original_price": 4000,
                             "pictures": ["url1", "url2"],
-                            "sizeChart": [
+                            "size_chart": [
                                 { "key": "chest", "value": "32" },
                                 { "key": "chest", "value": "32" }
-                            ]
+                            ],
+                            "store_link": "STORE_ID"
                         }
                     }),
                     uid: "UID",
@@ -196,12 +197,13 @@ describe("PRODUCT CONTROLLER", function () {
                                 "id": 1,
                                 "name": "TEST_DOC",
                                 "price": 500,
-                                "originalPrice": 4000,
+                                "original_price": 4000,
                                 "pictures": ["url1", "url2"],
-                                "sizeChart": [
+                                "size_chart": [
                                     { "key": "chest", "value": "32" },
                                     { "key": "chest", "value": "32" }
-                                ]
+                                ],
+                                "store_link": "STORE_ID"
                             }
                         }
                     )
