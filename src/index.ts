@@ -16,4 +16,4 @@ const prod_repo = new ProductRepository({
     prismaClient: new PrismaClient()
 })
 
-prod_repo.getProductsByDate()
+prod_repo.getDetailedProductsByDate()

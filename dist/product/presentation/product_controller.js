@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const inter_service_message_1 = require("../../core/models/inter_service_message");
 const websocket_request_1 = __importDefault(require("../../core/models/websocket_request"));
 const product_error_1 = __importDefault(require("../domain/errors/product_error"));
-const url_parse_1 = __importDefault(require("url-parse"));
 const websocket_response_1 = __importDefault(require("../../core/models/websocket_response"));
 class ProductController {
     constructor({ productService }) {
@@ -46,32 +45,44 @@ class ProductController {
     }
     handleGetRequest(interServiceMessage) {
         return __awaiter(this, void 0, void 0, function* () {
+            // const url = new Url(interServiceMessage.packet.url)
+            // //TODO: Comment out switch statement and forward all requests to getDetailedProducts function
+            // switch (url.pathname) {
+            //     case '/summary': {
+            //         const serviceResults = await this.productService.getSummaryProducts(interServiceMessage.packet)
+            //         return serviceResults.map((result) => {
+            //             return new InterServiceMessage(
+            //                 {
+            //                     packet: result,
+            //                     socketId: interServiceMessage.socketId,
+            //                     uid: interServiceMessage.uid,
+            //                     sendTo: result instanceof WebsocketResponse ? SendTo.SOCKET_ID : SendTo.UID
+            //                 }
+            //             )
+            //         })
+            //     }
+            //     case '/detailed': {
+            //         const serviceResults = await this.productService.getDetailedProduct(interServiceMessage.packet)
+            //         return serviceResults.map((serviceResult) => {
+            //             return new InterServiceMessage({
+            //                 packet: serviceResult,
+            //                 uid: interServiceMessage.uid,
+            //                 socketId: interServiceMessage.socketId,
+            //                 sendTo: serviceResult instanceof WebsocketResponse ? SendTo.SOCKET_ID : SendTo.UID
+            //             })
+            //         })
+            //     }
+            // }
             if (interServiceMessage.packet instanceof websocket_request_1.default) {
-                const url = new url_parse_1.default(interServiceMessage.packet.url);
-                switch (url.pathname) {
-                    case '/summary': {
-                        const serviceResults = yield this.productService.getSummaryProducts(interServiceMessage.packet);
-                        return serviceResults.map((result) => {
-                            return new inter_service_message_1.InterServiceMessage({
-                                packet: result,
-                                socketId: interServiceMessage.socketId,
-                                uid: interServiceMessage.uid,
-                                sendTo: result instanceof websocket_response_1.default ? inter_service_message_1.SendTo.SOCKET_ID : inter_service_message_1.SendTo.UID
-                            });
-                        });
-                    }
-                    case '/detailed': {
-                        const serviceResults = yield this.productService.getDetailedProduct(interServiceMessage.packet);
-                        return serviceResults.map((serviceResult) => {
-                            return new inter_service_message_1.InterServiceMessage({
-                                packet: serviceResult,
-                                uid: interServiceMessage.uid,
-                                socketId: interServiceMessage.socketId,
-                                sendTo: serviceResult instanceof websocket_response_1.default ? inter_service_message_1.SendTo.SOCKET_ID : inter_service_message_1.SendTo.UID
-                            });
-                        });
-                    }
-                }
+                const serviceResults = yield this.productService.getDetailedProduct(interServiceMessage.packet);
+                return serviceResults.map((serviceResult) => {
+                    return new inter_service_message_1.InterServiceMessage({
+                        packet: serviceResult,
+                        uid: interServiceMessage.uid,
+                        socketId: interServiceMessage.socketId,
+                        sendTo: serviceResult instanceof websocket_response_1.default ? inter_service_message_1.SendTo.SOCKET_ID : inter_service_message_1.SendTo.UID
+                    });
+                });
             }
             throw new product_error_1.default({ code: "unimplimented" });
         });

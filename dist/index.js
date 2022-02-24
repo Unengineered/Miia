@@ -15,4 +15,4 @@ const prod_repo = new product_repository_1.default({
     mongoDbConnection: mongoose_1.default.createConnection((_a = process.env.MONGO_REMOTE_URI) !== null && _a !== void 0 ? _a : ""),
     prismaClient: new client_1.PrismaClient()
 });
-prod_repo.getProductsByDate();
+prod_repo.getDetailedProductsByDate();
