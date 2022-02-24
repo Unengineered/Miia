@@ -45,20 +45,24 @@ describe("PRODUCT CONTROLLER", function () {
                             "price": 234,
                             "original_price": 3400,
                             "pictures": [
-                                "djfjjkkkkk",
-                                "dkksksjnnmm"
+                                "https://skirt.com/pk",
+                                "https://skirt.com/pk"
                             ],
                             "size_chart": [
                                 {
-                                    "length": "2",
-                                    "seam": "loose"
+                                    "key": "length",
+                                    "value": "2"
+                                },
+                                {
+                                    "key": "seam",
+                                    "value": "loose"
                                 }
                             ],
                             "store_link": {
                                 "id": "1",
-                                "name": "eva thrift",
-                                "thumbnail": "blah blah",
-                                "instagram": "instagramlink"
+                                "name": "thriftlift",
+                                "thumbnail": "https://www.shutterstock.com/image-vector/hanger-logo-icon-clothes-shop-thrift-1786368296",
+                                "instagram": "https://instagram.com/thriftlift?utm_medium=copy_link"
                             }
                         }
                     ]
@@ -101,20 +105,24 @@ describe("PRODUCT CONTROLLER", function () {
                                     "price": 234,
                                     "original_price": 3400,
                                     "pictures": [
-                                        "djfjjkkkkk",
-                                        "dkksksjnnmm"
+                                        "https://skirt.com/pk",
+                                        "https://skirt.com/pk"
                                     ],
                                     "size_chart": [
                                         {
-                                            "length": "2",
-                                            "seam": "loose"
+                                            "key": "length",
+                                            "value": "2"
+                                        },
+                                        {
+                                            "key": "seam",
+                                            "value": "loose"
                                         }
                                     ],
                                     "store_link": {
                                         "id": "1",
-                                        "name": "eva thrift",
-                                        "thumbnail": "blah blah",
-                                        "instagram": "instagramlink"
+                                        "name": "thriftlift",
+                                        "thumbnail": "https://www.shutterstock.com/image-vector/hanger-logo-icon-clothes-shop-thrift-1786368296",
+                                        "instagram": "https://instagram.com/thriftlift?utm_medium=copy_link"
                                     }
                                 }
                             ]
