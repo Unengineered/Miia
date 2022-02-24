@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { app } from '../core/configs/firebase.config'
+import { app } from '../core/configs/firebase/firebase.config'
 import WebsocketMessage from "../core/models/websocket_message";
 import WebsocketRequest from "../core/models/websocket_request";
 

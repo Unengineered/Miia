@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import WebsocketRequest from "../../../src/core/models/websocket_request";
 
-describe("websocket request", function () {
+describe("WEBSOCKET REQUEST", function () {
 
     var json: any;
 

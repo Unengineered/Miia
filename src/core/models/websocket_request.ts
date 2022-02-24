@@ -4,12 +4,12 @@ export default class WebsocketRequest {
     readonly requestId: string
     readonly method: string
     readonly url: string
-    readonly headers: Object
-    readonly body: Object
+    readonly headers: {[key:string] : any}
+    readonly body: {[key:string] : any}
 
     constructor(
         { requestId, method, url, headers, body }:
-            { requestId: string, method: string, url: string, headers: Object, body: Object }) {
+            { requestId: string, method: string, url: string, headers: {[key:string] : any}, body: {[key:string] : any} }) {
         this.requestId = requestId
         this.method = method
         this.url = url

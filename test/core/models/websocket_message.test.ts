@@ -1,7 +1,7 @@
 import { assert } from "chai"
 import WebsocketMessage from "../../../src/core/models/websocket_message"
 
-describe("websocket message", function(){
+describe("WEBSOCKET MESSAGE", function(){
 
     var json: any
     var message: WebsocketMessage

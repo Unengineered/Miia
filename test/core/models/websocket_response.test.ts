@@ -1,7 +1,7 @@
 import { assert } from "chai"
 import WebsocketResponse from "../../../src/core/models/websocket_response"
 
-describe("websocket response", function () {
+describe("WEBSOCKET RESPONSE", function () {
     var response: WebsocketResponse
 
     beforeEach(function () {
