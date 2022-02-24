@@ -1,6 +1,6 @@
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
-import { Connection, Model } from 'mongoose'
+import { Connection, Model, Document } from 'mongoose'
 import ProductRepository from '../../../src/product/infrastructure/product_repository'
 import IProductRepository from '../../../src/product/domain/i_product_repository'
 import { DetailedThriftProductEntity, DetailedThriftProductSchema, StoreLinkEntity, StoreLinkSchema } from '../../../src/product/domain/entities/detailed_thrift_product'
@@ -23,7 +23,10 @@ describe("PRODUCT REPOSITORY", function () {
 
     //for get test
     var store_id: string
-    var product_id: string
+    var product_id_1: string
+    var product_id_2: string
+    var doc_1: Document
+    var doc_2: Document
 
     before(async function () {
         //SETUP MONGO
@@ -39,12 +42,25 @@ describe("PRODUCT REPOSITORY", function () {
         }))
         await store.save()
         store_id = store._id.toString();
-        //add doc for get test
-        const doc = new productModel({
-            name: "TEST_DOC",
+
+        //add docs for get test
+        doc_1 = new productModel({
+            name: "TEST_DOC_1",
             price: 500,
             originalPrice: 4000,
-            pictures: ["url1", "url2"],
+            pictures: ["https://www.something.com/1", "https://www.something.com/2"],
+            sizeChart: [
+                { key: "chest", value: "32" },
+                { key: "chest", value: "32" }
+            ],
+            storeLink: store_id
+        })
+
+        doc_2 = new productModel({
+            name: "TEST_DOC_2",
+            price: 500,
+            originalPrice: 4000,
+            pictures: ["https://www.something.com/1", "https://www.something.com/2"],
             sizeChart: [
                 { key: "chest", value: "32" },
                 { key: "chest", value: "32" }
@@ -52,12 +68,12 @@ describe("PRODUCT REPOSITORY", function () {
             storeLink: store_id
         })
         
-        // const result = await repo.getDetailedProduct(id)
+        await doc_1.save()
+        await doc_2.save()
         
-        await doc.save()
-         
-        product_id = doc._id.toString();
-
+        product_id_1 = doc_1._id.toString();
+        product_id_2 = doc_2._id.toString();
+        
         //SETUP PRISMA
         prismaClient = new PrismaClient()
     })
@@ -70,12 +86,61 @@ describe("PRODUCT REPOSITORY", function () {
         mongod.stop()
     })
 
-    it.skip("should save document with new detailed thrift product", async function () {
+    it("Should get products by date", async function () {
+
+        const result = await repo.getDetailedProductsByDate();
+        const products = result as DetailedThriftProductEntity[];
+        let docs:any = products.map((product) => product.toJson())
+        
+        assert.equal(docs[docs.length - 1].name, "TEST_DOC_1");
+        assert.equal(docs[docs.length - 2].name, "TEST_DOC_2");
+    })
+
+    it("should get products from database", async function () {
+        let result : DetailedThriftProductEntity[] | ProductError;
+        result = await repo.getDetailedProductsByStore(store_id)
+
+        const store_link = new StoreLinkEntity ({
+            id: store_id,
+            name: 'test-store',
+            thumbnail: 'thumbnail',
+            instagram: 'instagram'
+        });
+
+        let matcher = [new DetailedThriftProductEntity({
+            id: product_id_1,
+            name: "TEST_DOC_1",
+            price: 500,
+            originalPrice: 4000,
+            pictures: ["https://www.something.com/1", "https://www.something.com/2"],
+            sizeChart: [
+                { key: "chest", value: "32" },
+                { key: "chest", value: "32" }
+            ],
+            storeLink: store_link
+            }),
+            new DetailedThriftProductEntity({
+                id: product_id_2,
+                name: "TEST_DOC_2",
+                price: 500,
+                originalPrice: 4000,
+                pictures: ["https://www.something.com/1", "https://www.something.com/2"],
+                sizeChart: [
+                    { key: "chest", value: "32" },
+                    { key: "chest", value: "32" }
+                ],
+                storeLink: store_link
+            })
+        ]
+        assert.deepEqual(result, matcher);
+    })
+
+    it("should save document with new detailed thrift product", async function () {
         await repo.saveProduct(DetailedThriftProductEntity.forSaving({
             name: "NAME",
             price: 200,
             originalPrice: 5000,
-            pictures: ["url1", "url2"],
+            pictures: ["https://www.something.com/1", "https://www.something.com/2"],
             sizeChart: [
                 { key: "chest", value: "32" }
             ],
@@ -84,61 +149,5 @@ describe("PRODUCT REPOSITORY", function () {
         const count = await productModel.countDocuments({ name: "NAME" });
         assert.equal(count, 1)
     })
-
-    it("should get products from database", async function () {
-        let result : DetailedThriftProductEntity[] | ProductError;
-        result = await repo.getDetailedProductsByStore(store_id)
-            
-        let matcher = [new DetailedThriftProductEntity({
-            id: product_id,
-            name: "TEST_DOC",
-            price: 500,
-            originalPrice: 4000,
-            pictures: ["url1", "url2"],
-            sizeChart: [
-                { key: "chest", value: "32" },
-                { key: "chest", value: "32" }
-            ],
-            storeLink: store_id
-        })]
-        const products = result as DetailedThriftProductEntity[];
-        let docs:any = products.map((product) => product.toJson())
-        let matcherDocs:any = matcher.map((product) => product.toJson())        
         
-        console.log(docs);
-        console.log(matcherDocs);
-
-        assert.equal(docs[0].id, matcherDocs[0].id);
-        assert.equal(docs[0].name, matcherDocs[0].name);
-        assert.equal(docs[0].price, matcherDocs[0].price);
-        assert.equal(docs[0].originalPrice, matcherDocs[0].originalPrice);
-        assert.deepEqual(docs[0].pictures, matcherDocs[0].pictures);
-        assert.deepEqual(docs[0].sizeChart, matcherDocs[0].sizeChart);
-        assert.equal(docs[0].store_link._id, store_id);
-        assert.equal(docs[0].store_link.name, "test-store");
-        assert.equal(docs[0].store_link.thumbnail, "thumbnail");
-        assert.equal(docs[0].store_link.instagram, "instagram");
-    })
-
-    it("Should get products by date", async function () {
-        await repo.saveProduct(DetailedThriftProductEntity.forSaving({
-            name: "NAME",
-            price: 200,
-            originalPrice: 5000,
-            pictures: ["url1", "url2"],
-            sizeChart: [
-                { key: "chest", value: "32" }
-            ],
-            storeLink: store_id
-        }))
-
-        const result = await repo.getDetailedProductsByDate();
-        const products = result as DetailedThriftProductEntity[];
-        let docs:any = products.map((product) => product.toJson())
-
-        assert.equal(docs[0].name, "NAME");
-        assert.equal(docs[1].name, "TEST_DOC");
-
-        console.log(result);
-    })
 })

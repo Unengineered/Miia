@@ -93,7 +93,7 @@ const DetailedThriftProductSchema = new Schema({
     price: Number,
     originalPrice: Number,
     pictures: [String],
-    sizeChart: [{ key: String, value: String }],
+    sizeChart: [{ key: String, value: String, _id : false }],
     storeLink: {type: Types.ObjectId, ref: 'StoreLink', required: true}
 })
 

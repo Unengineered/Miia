@@ -53,19 +53,23 @@ export default class ProductRepository implements IProductRepository{
         return this.detailedThriftProductModel
             .find({'storeLink' : id})
             .populate('storeLink')
+            .lean()
             .exec()
             .then((products) => {
                 if(products === null) return new ProductError({code: "no-items"})
                 return products.map((product) => {
                     //Remapping product to entity to avoid extra fields
+
+                    //TODO : Add error check for storelink
+                    const storeLink : any = product.storeLink;  
                     return new DetailedThriftProductEntity({
-                        id: product.id,
+                        id: product._id.toString(),
                         name: product.name,
                         price: product.price,
                         originalPrice: product.originalPrice,
                         pictures: product.pictures,
                         sizeChart: product.sizeChart,
-                        storeLink: product.storeLink
+                        storeLink: new StoreLinkEntity({id : storeLink._id.toString(), name: storeLink.name, thumbnail: storeLink.thumbnail, instagram: storeLink.instagram})
                     })
                 })
             })
@@ -78,20 +82,22 @@ export default class ProductRepository implements IProductRepository{
         return this.detailedThriftProductModel
                 .find()
                 .populate('storeLink')
-                .sort({"_id": -1}) 
+                .sort({"_id": -1})
+                .lean()
                 .exec()
                 .then((products) => {
                     if(products === null) return new ProductError({code: "no-items"})
                     return products.map((product) => {
                         //Remapping product to entity to avoid extra fields
+                        const storeLink : any = product.storeLink;
                         return new DetailedThriftProductEntity({
-                            id: product.id,
+                            id: product._id.toString(),
                             name: product.name,
                             price: product.price,
                             originalPrice: product.originalPrice,
                             pictures: product.pictures,
                             sizeChart: product.sizeChart,
-                            storeLink: product.storeLink
+                            storeLink: new StoreLinkEntity({id : storeLink._id.toString(), name: storeLink.name, thumbnail: storeLink.thumbnail, instagram: storeLink.instagram})
                         })
                     })
                 })
