@@ -1,8 +1,6 @@
 import { InterServiceMessage, SendTo } from "../../core/models/inter_service_message";
-import WebsocketMessage from "../../core/models/websocket_message";
 import WebsocketRequest from "../../core/models/websocket_request";
 import ProductError from "../domain/errors/product_error";
-import Url from 'url-parse'
 import ProductService from "../application/product_service";
 import WebsocketResponse from "../../core/models/websocket_response";
 
@@ -81,6 +79,7 @@ export default class ProductController {
                     sendTo: serviceResult instanceof WebsocketResponse ? SendTo.SOCKET_ID : SendTo.UID
                 })
             })
+
         }
         throw new ProductError({ code: "unimplimented" })
     }

@@ -1,7 +1,6 @@
 import { DetailedThriftProductEntity } from "../domain/entities/detailed_thrift_product";
 import ProductError from "../domain/errors/product_error";
 import IProductRepository from "../domain/i_product_repository";
-import SummaryThriftProduct from "../domain/entities/summary_thrift_product";
 import WebsocketResponse from "../../core/models/websocket_response";
 import WebsocketRequest from "../../core/models/websocket_request";
 import WebsocketMessage from "../../core/models/websocket_message";
@@ -256,7 +255,6 @@ export default class ProductService {
     //             }
     //         })
     // }
-
 
 
     /**

@@ -74,7 +74,7 @@ class ProductController {
             //     }
             // }
             if (interServiceMessage.packet instanceof websocket_request_1.default) {
-                const serviceResults = yield this.productService.getDetailedThriftProducts(interServiceMessage.packet);
+                const serviceResults = yield this.productService.getDetailedProduct(interServiceMessage.packet);
                 return serviceResults.map((serviceResult) => {
                     return new inter_service_message_1.InterServiceMessage({
                         packet: serviceResult,

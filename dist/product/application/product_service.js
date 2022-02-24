@@ -35,8 +35,8 @@ class ProductService {
                         return [
                             new websocket_response_1.default({
                                 responseId: request.requestId,
-                                statusCode: 400,
-                                statusMessage: "ERROR",
+                                statusCode: 404,
+                                statusMessage: "NOT_FOUND",
                                 headers: {},
                                 body: {
                                     error: result.code

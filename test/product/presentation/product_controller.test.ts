@@ -30,78 +30,6 @@ describe("PRODUCT CONTROLLER", function () {
         productService.putProduct.reset()
     })
 
-    it("should handle successful GET summary request", async function () {
-        productService.getDetailedThriftProducts.resolves(
-            [
-                new WebsocketResponse({
-                    responseId: "ID",
-                    statusCode: 200,
-                    statusMessage: "OK",
-                    headers: {},
-                    body: {
-                        "summary_thrift_products": [
-                            {
-                                id: 1,
-                                name: "FIRST PRODUCT",
-                                thumbnail: "url1"
-                            },
-                            {
-                                id: 2,
-                                name: "SECOND PRODUCT",
-                                thumbnail: "url2"
-                            }
-                        ]
-                    }
-                })
-            ]
-        )
-
-        const response = await productController.handleRequest(new InterServiceMessage(
-            {
-                packet: new WebsocketRequest(
-                    {
-                        requestId: "ID",
-                        method: "GET",
-                        url: "https://www.everythng.in/summary",
-                        headers: {},
-                        body: {}
-                    }
-                ),
-                uid: "UID",
-                socketId: "SOCKET_ID"
-            }
-        ))
-
-        assert.deepEqual(response, [new InterServiceMessage(
-            {
-                packet: new WebsocketResponse(
-                    {
-                        responseId: "ID",
-                        statusCode: 200,
-                        statusMessage: "OK",
-                        headers: {},
-                        body: {
-                            "summary_thrift_products": [
-                                {
-                                    id: 1,
-                                    name: "FIRST PRODUCT",
-                                    thumbnail: "url1"
-                                },
-                                {
-                                    id: 2,
-                                    name: "SECOND PRODUCT",
-                                    thumbnail: "url2"
-                                }
-                            ]
-                        }
-                    }
-                ),
-                uid: "UID",
-                socketId: "SOCKET_ID",
-                sendTo: SendTo.SOCKET_ID
-            }
-        )])
-    })
 
     it("should handle GET detailed product request", async function () {
         productService.getDetailedThriftProducts.resolves([
@@ -111,15 +39,34 @@ describe("PRODUCT CONTROLLER", function () {
                 statusMessage: "OK",
                 headers: {},
                 body: {
-                    "id": 1,
-                    "name": "TEST_DOC",
-                    "price": 500,
-                    "originalPrice": 4000,
-                    "pictures": ["url1", "url2"],
-                    "sizeChart": [
-                        { "key": "chest", "value": "32" },
-                        { "key": "chest", "value": "32" }
+                    "detailed_thrift_products": [
+                        {
+                            "name": "skirt",
+                            "price": 234,
+                            "original_price": 3400,
+                            "pictures": [
+                                "https://skirt.com/pk",
+                                "https://skirt.com/pk"
+                            ],
+                            "size_chart": [
+                                {
+                                    "key": "length",
+                                    "value": "2"
+                                },
+                                {
+                                    "key": "seam",
+                                    "value": "loose"
+                                }
+                            ],
+                            "store_link": {
+                                "id": "1",
+                                "name": "thriftlift",
+                                "thumbnail": "https://www.shutterstock.com/image-vector/hanger-logo-icon-clothes-shop-thrift-1786368296",
+                                "instagram": "https://instagram.com/thriftlift?utm_medium=copy_link"
+                            }
+                        }
                     ]
+
                 }
             })
         ])
@@ -130,7 +77,7 @@ describe("PRODUCT CONTROLLER", function () {
                     {
                         requestId: "ID",
                         method: "GET",
-                        url: "https://www.everythng.in/detailed?id=2",
+                        url: "https://www.everythng.in/product/",
                         headers: {},
                         body: {}
                     }
@@ -152,15 +99,34 @@ describe("PRODUCT CONTROLLER", function () {
                         statusMessage: "OK",
                         headers: {},
                         body: {
-                            "id": 1,
-                            "name": "TEST_DOC",
-                            "price": 500,
-                            "originalPrice": 4000,
-                            "pictures": ["url1", "url2"],
-                            "sizeChart": [
-                                { "key": "chest", "value": "32" },
-                                { "key": "chest", "value": "32" }
+                            "detailed_thrift_products": [
+                                {
+                                    "name": "skirt",
+                                    "price": 234,
+                                    "original_price": 3400,
+                                    "pictures": [
+                                        "https://skirt.com/pk",
+                                        "https://skirt.com/pk"
+                                    ],
+                                    "size_chart": [
+                                        {
+                                            "key": "length",
+                                            "value": "2"
+                                        },
+                                        {
+                                            "key": "seam",
+                                            "value": "loose"
+                                        }
+                                    ],
+                                    "store_link": {
+                                        "id": "1",
+                                        "name": "thriftlift",
+                                        "thumbnail": "https://www.shutterstock.com/image-vector/hanger-logo-icon-clothes-shop-thrift-1786368296",
+                                        "instagram": "https://instagram.com/thriftlift?utm_medium=copy_link"
+                                    }
+                                }
                             ]
+
                         }
                     })
                 }
@@ -200,12 +166,13 @@ describe("PRODUCT CONTROLLER", function () {
                         body: {
                             "name": "TEST_DOC",
                             "price": 500,
-                            "originalPrice": 4000,
+                            "original_price": 4000,
                             "pictures": ["url1", "url2"],
-                            "sizeChart": [
+                            "size_chart": [
                                 { "key": "chest", "value": "32" },
                                 { "key": "chest", "value": "32" }
-                            ]
+                            ],
+                            "store_link": "STORE_ID"
                         }
                     }),
                     uid: "UID",
@@ -230,12 +197,13 @@ describe("PRODUCT CONTROLLER", function () {
                                 "id": 1,
                                 "name": "TEST_DOC",
                                 "price": 500,
-                                "originalPrice": 4000,
+                                "original_price": 4000,
                                 "pictures": ["url1", "url2"],
-                                "sizeChart": [
+                                "size_chart": [
                                     { "key": "chest", "value": "32" },
                                     { "key": "chest", "value": "32" }
-                                ]
+                                ],
+                                "store_link": "STORE_ID"
                             }
                         }
                     )

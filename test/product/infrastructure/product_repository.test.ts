@@ -11,7 +11,7 @@
 
 
 // //TODO (yashraj)
-// describe("PRODUCT REPOSITORY", function () {
+// describe.skip("PRODUCT REPOSITORY", function () {
 
 //     var mongod: MongoMemoryServer
 //     var repo: IProductRepository
