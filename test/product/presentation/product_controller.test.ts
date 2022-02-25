@@ -6,7 +6,6 @@ import WebsocketResponse from '../../../src/core/models/websocket_response'
 import ProductService from '../../../src/product/application/product_service'
 import ProductController from '../../../src/product/presentation/product_controller'
 
-//TODO:(vd)
 
 /**
  * These tests currently only test if the controller
