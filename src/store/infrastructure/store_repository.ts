@@ -1,8 +1,9 @@
+
 import { Connection, Model, Document } from "mongoose";
 import { StoreLinkSchema, StoreLinkEntity } from "../../core/models/store_link";
 import StoreError from "../domain/errors/store_error";
-import store_error from "../domain/errors/store_error";
 import IStoreRepository from "../domain/i_store_repository";
+
 
 
 export default class StoreRepository implements IStoreRepository{
@@ -13,6 +14,7 @@ export default class StoreRepository implements IStoreRepository{
         this.mongoDbConnection = mongoDbConnection
         this.storeLinkModel = this.mongoDbConnection.model<StoreLinkEntity>('StoreLink', StoreLinkSchema)
     }
+
 
     async getStoreLinkList(): Promise<StoreLinkEntity[] | store_error> {
         return this.storeLinkModel
