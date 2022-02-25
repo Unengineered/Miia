@@ -29,9 +29,16 @@ describe("STORE CONTROLLER", function () {
                 body: {
                     "thrift_stores": [
                         {
-                            "id": "id",
+                            "id": "id1",
                             "name": "thriftlift",
                             "instagram": "https://instagram.com/thriftlift?utm_medium=copy_link",
+                            "thumbnail": "https://www.shutterstock.com/image-vector/hanger-logo-icon-clothes-shop-thrift-1786368296"
+
+                        },
+                        {
+                            "id": "id2",
+                            "name": "thriftstore",
+                            "instagram": "https://instagram.com/thriftstore?utm_medium=copy_link",
                             "thumbnail": "https://www.shutterstock.com/image-vector/hanger-logo-icon-clothes-shop-thrift-1786368296"
 
                         }
@@ -71,11 +78,18 @@ describe("STORE CONTROLLER", function () {
                         body: {
                             "thrift_stores": [
                                 {
-                                    "id": "id",
+                                    "id": "id1",
                                     "name": "thriftlift",
                                     "instagram": "https://instagram.com/thriftlift?utm_medium=copy_link",
                                     "thumbnail": "https://www.shutterstock.com/image-vector/hanger-logo-icon-clothes-shop-thrift-1786368296"
-
+        
+                                },
+                                {
+                                    "id": "id2",
+                                    "name": "thriftstore",
+                                    "instagram": "https://instagram.com/thriftstore?utm_medium=copy_link",
+                                    "thumbnail": "https://www.shutterstock.com/image-vector/hanger-logo-icon-clothes-shop-thrift-1786368296"
+        
                                 }
                             ]
 
