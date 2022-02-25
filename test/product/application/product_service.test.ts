@@ -1,11 +1,10 @@
-//TODO: (ishan)
 import { assert } from 'chai'
 import Sinon from 'sinon'
-import InterServiceMessage, { SendTo } from '../../../src/core/models/inter_service_message'
+import { StoreLinkEntity } from '../../../src/core/models/store_link'
+import { DetailedThriftProductEntity } from '../../../src/product/domain/entities/detailed_thrift_product'
 import WebsocketRequest from '../../../src/core/models/websocket_request'
 import WebsocketResponse from '../../../src/core/models/websocket_response'
 import ProductService from '../../../src/product/application/product_service'
-import { DetailedThriftProductEntity, StoreLinkEntity } from '../../../src/product/domain/entities/detailed_thrift_product'
 import ProductRepository from '../../../src/product/infrastructure/product_repository'
 
 

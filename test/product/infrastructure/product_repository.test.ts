@@ -4,16 +4,12 @@ import mongoose from 'mongoose'
 import { Connection, Model, Document } from 'mongoose'
 import ProductRepository from '../../../src/product/infrastructure/product_repository'
 import IProductRepository from '../../../src/product/domain/i_product_repository'
-import { DetailedThriftProductEntity, DetailedThriftProductSchema, StoreLinkEntity, StoreLinkSchema } from '../../../src/product/domain/entities/detailed_thrift_product'
+import { DetailedThriftProductEntity, DetailedThriftProductSchema} from '../../../src/product/domain/entities/detailed_thrift_product'
 import { assert } from 'chai'
 import { PrismaClient} from '@prisma/client'
 import ProductError from '../../../src/product/domain/errors/product_error'
+import { StoreLinkEntity, StoreLinkSchema } from '../../../src/core/models/store_link'
 
-
-// //TODO: Find a way to mock prisma.
-
-
-// //TODO (yashraj)
  describe("PRODUCT REPOSITORY", function () {
 
 
