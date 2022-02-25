@@ -5,7 +5,7 @@ import WebsocketResponse from "../../core/models/websocket_response";
 import StoreError from "../domain/errors/store_error";
 import IStoreRepository from "../domain/i_store_repository";
 
-class StoreService {
+export default class StoreService {
     readonly storeRepo: IStoreRepository
 
     constructor({ storeRepo }: { storeRepo: IStoreRepository }) {
