@@ -5,9 +5,7 @@ import { StoreLinkEntity, StoreLinkSchema } from '../../../src/core/models/store
 import IStoreRepository from '../../../src/store/domain/i_store_repository';
 import StoreRepository from '../../../src/store/infrastructure/store_repository';
 import StoreError from '../../../src/store/domain/errors/store_error';
-import { PrismaClient} from '@prisma/client'
 import { assert } from 'chai'
-
 
 describe("STORE REPOSITORY", function(){
 
@@ -15,7 +13,6 @@ describe("STORE REPOSITORY", function(){
     var repo: IStoreRepository
     var mongoConnection: Connection
     var storeModel: Model<StoreLinkEntity>
-    var prismaClient: PrismaClient
 
     let store_id_1: string
     let store_id_2: string
@@ -42,12 +39,10 @@ describe("STORE REPOSITORY", function(){
         store_id_1 = store_1._id.toString();
         store_id_2 = store_2._id.toString();
 
-        //SETUP PRISMA
-        prismaClient = new PrismaClient()
     })
 
     beforeEach(function () {
-        repo = new StoreRepository({ mongoDbConnection: mongoConnection, prismaClient: prismaClient })
+        repo = new StoreRepository({ mongoDbConnection: mongoConnection })
     })
 
     this.afterAll(function () {

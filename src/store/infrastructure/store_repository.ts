@@ -3,17 +3,14 @@ import { StoreLinkSchema, StoreLinkEntity } from "../../core/models/store_link";
 import StoreError from "../domain/errors/store_error";
 import store_error from "../domain/errors/store_error";
 import IStoreRepository from "../domain/i_store_repository";
-import { PrismaClient } from "@prisma/client";
 
 
 export default class StoreRepository implements IStoreRepository{
     readonly mongoDbConnection: Connection
     readonly storeLinkModel: Model<StoreLinkEntity>
-    readonly prismaClient: PrismaClient
 
-    constructor({mongoDbConnection, prismaClient} : {mongoDbConnection: Connection, prismaClient: PrismaClient}){
+    constructor({mongoDbConnection} : {mongoDbConnection: Connection}){
         this.mongoDbConnection = mongoDbConnection
-        this.prismaClient = prismaClient
         this.storeLinkModel = this.mongoDbConnection.model<StoreLinkEntity>('StoreLink', StoreLinkSchema)
     }
 
