@@ -16,7 +16,7 @@ export default class StoreRepository implements IStoreRepository{
     }
 
 
-    async getStoreLinkList(): Promise<StoreLinkEntity[] | store_error> {
+    async getStoreLinkList(): Promise<StoreLinkEntity[] | StoreError> {
         return this.storeLinkModel
             .find()
             .lean()
@@ -37,7 +37,7 @@ export default class StoreRepository implements IStoreRepository{
             })
     }
 
-    async putStoreLink(store: StoreLinkEntity): Promise<StoreLinkEntity | store_error> {
+    async putStoreLink(store: StoreLinkEntity): Promise<StoreLinkEntity | StoreError> {
         
         const doc = new this.storeLinkModel({
             name: store.name,
