@@ -1,3 +1,4 @@
+
 import { Model, Types, Document, Connection } from "mongoose";
 import { DetailedThriftProductEntity, DetailedThriftProductSchema } from '../domain/entities/detailed_thrift_product'
 import { StoreLinkEntity, StoreLinkSchema } from '../../core/models/store_link'
@@ -5,6 +6,7 @@ import { StoreLinkEntity, StoreLinkSchema } from '../../core/models/store_link'
 import IProductRepository from '../domain/i_product_repository'
 import ProductError from '../domain/errors/product_error'
 import { PrismaClient } from "@prisma/client";
+import { StoreLinkSchema, StoreLinkEntity } from "../../core/models/store_link";
 import SummaryThriftProduct from "../domain/entities/summary_thrift_product";
 
 export default class ProductRepository implements IProductRepository {
