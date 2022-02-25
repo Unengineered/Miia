@@ -49,7 +49,7 @@ describe("STORE SERVICE", function () {
                     {
                         requestId: "62148dbacd944133da8d8ad4",
                         method: "GET",
-                        url: "https://www.everythng.in/store_links",
+                        url: "https://www.everythng.in/store",
                         headers: {},
                         body: {},
                     }
@@ -104,14 +104,12 @@ describe("STORE SERVICE", function () {
                     method: "PUT",
                     url: "https://www.everythng.in/store_link",
                     headers: {},
-                    body: new StoreLinkEntity(
-                        {
-                            id: "102",
-                            name: "H&M",
-                            thumbnail: "https://www.example.com/example",
-                            instagram: "https://www.instagram.com/instagram"
-                        }
-                    ),
+                    body:
+                    {
+                        name: "H&M",
+                        thumbnail: "https://www.example.com/example",
+                        instagram: "https://www.instagram.com/instagram"
+                    }
                 }
             )
         )
@@ -123,14 +121,13 @@ describe("STORE SERVICE", function () {
                 statusMessage: "OK",
                 headers: {},
                 body: {
-                    store_link: new StoreLinkEntity(
-                        {
-                            id: "102",
-                            name: "H&M",
-                            thumbnail: "https://www.example.com/example",
-                            instagram: "https://www.instagram.com/instagram"
-                        }
-                    ),
+                    store_link:
+                    {
+                        id: "102",
+                        name: "H&M",
+                        thumbnail: "https://www.example.com/example",
+                        instagram: "https://www.instagram.com/instagram"
+                    }
                 }
             })
         ])

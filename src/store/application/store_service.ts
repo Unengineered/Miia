@@ -77,7 +77,7 @@ export default class StoreService {
                         statusMessage: "OK",
                         headers: {},
                         body: {
-                            "store_link": storeLink
+                            "store_link": storeLink.toJson()
                         }
                     })
                 ]
