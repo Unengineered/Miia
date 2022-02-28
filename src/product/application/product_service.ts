@@ -98,6 +98,7 @@ export default class ProductService {
                 name: request.body["name"] as string,
                 price: request.body["price"] as number,
                 originalPrice: request.body["originalPrice"] as number,
+                description: request.body["description"] as string,
                 pictures: request.body["pictures"] as string[],
                 sizeChart: request.body["sizeChart"] as { key: string, value: string }[],
                 storeLink: request.body["storeLink"] as string
@@ -116,7 +117,7 @@ export default class ProductService {
                             })
                         ]
                     } else {
-                        const product = result as DetailedThriftProductEntity
+                        const product = result 
                         return [
                             new WebsocketResponse({
                                 responseId: request.requestId,
