@@ -9,7 +9,7 @@ class DetailedThriftProductEntity {
     readonly originalPrice: number | null
     readonly description: string | null
     readonly pictures: string[]
-    readonly sizeChart: { key: String, value: String }[]
+    readonly sizeChart: { key: string, value: string }[] | null
     readonly storeLink: StoreLinkEntity | string
 
     /**
@@ -20,7 +20,7 @@ class DetailedThriftProductEntity {
      */
 
     constructor({ id, name, price, originalPrice,description, pictures, sizeChart, storeLink }:
-        { id: string | null, name: string | null, price: number, originalPrice: number | null, description: string | null,pictures: string[], sizeChart: { key: String, value: String }[], storeLink: StoreLinkEntity | string }) {
+        { id: string | null, name: string | null, price: number, originalPrice: number | null, description: string | null,pictures: string[], sizeChart: { key: string, value: string }[] | null, storeLink: StoreLinkEntity | string }) {
         this.id = id
         this.name = name
         this.price = price
@@ -45,7 +45,7 @@ class DetailedThriftProductEntity {
     }
 
     static forSaving({ name, price, originalPrice, pictures,description, sizeChart, storeLink }:
-        { name: string | null, price: number, originalPrice: number | null, description: string | null,pictures: string[], sizeChart: { key: string, value: string }[], storeLink: string }): DetailedThriftProductEntity {
+        { name: string | null, price: number, originalPrice: number | null, description: string | null,pictures: string[], sizeChart: { key: string, value: string }[] | null, storeLink: string }): DetailedThriftProductEntity {
         return new DetailedThriftProductEntity({
             id: null,
             name: name,
