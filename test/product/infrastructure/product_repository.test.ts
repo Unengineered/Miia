@@ -46,6 +46,7 @@ import { StoreLinkEntity, StoreLinkSchema } from '../../../src/core/models/store
         doc_1 = new productModel({
             name: "TEST_DOC_1",
             price: 500,
+            description: "product description",
             originalPrice: 4000,
             pictures: ["https://www.something.com/1", "https://www.something.com/2"],
             sizeChart: [
@@ -59,6 +60,7 @@ import { StoreLinkEntity, StoreLinkSchema } from '../../../src/core/models/store
             name: "TEST_DOC_2",
             price: 500,
             originalPrice: 4000,
+            description: "product description",
             pictures: ["https://www.something.com/1", "https://www.something.com/2"],
             sizeChart: [
                 { key: "chest", value: "32" },
