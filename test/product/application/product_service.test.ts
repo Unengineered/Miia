@@ -31,6 +31,7 @@ describe("PRODUCT SERVICE", function () {
                 name: "Lightning McQueen Tee",
                 price: 200,
                 originalPrice: 5000,
+                description : "product description",
                 pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                 sizeChart: [
                     { key: "chest", value: "32" }
@@ -47,6 +48,7 @@ describe("PRODUCT SERVICE", function () {
                 name: "Men Solid Muscle Fit Piqu Polo Shirt",
                 price: 700,
                 originalPrice: 5000,
+                description : "product description",
                 pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                 sizeChart: [
                     { key: "chest", value: "32" }
@@ -63,6 +65,7 @@ describe("PRODUCT SERVICE", function () {
                 name: "Women Green Solid Pure Cotton Corduroy Casual Shirt",
                 price: 1600,
                 originalPrice: 4000,
+                description : "product description",
                 pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                 sizeChart: [
                     { key: "waist", value: "36" }
@@ -97,6 +100,7 @@ describe("PRODUCT SERVICE", function () {
                         name: "Lightning McQueen Tee",
                         price: 200,
                         originalPrice: 5000,
+                        description : "product description",
                         pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                         sizeChart: [
                             { key: "chest", value: "32" }
@@ -113,6 +117,7 @@ describe("PRODUCT SERVICE", function () {
                         name: "Men Solid Muscle Fit Piqu Polo Shirt",
                         price: 700,
                         originalPrice: 5000,
+                        description : "product description",
                         pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                         sizeChart: [
                             { key: "chest", value: "32" }
@@ -129,6 +134,7 @@ describe("PRODUCT SERVICE", function () {
                         name: "Women Green Solid Pure Cotton Corduroy Casual Shirt",
                         price: 1600,
                         originalPrice: 4000,
+                        description : "product description",
                         pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                         sizeChart: [
                             { key: "waist", value: "36" }
@@ -152,6 +158,7 @@ describe("PRODUCT SERVICE", function () {
                 name: "Lightning McQueen Tee",
                 price: 200,
                 originalPrice: 5000,
+                description : "product description",
                 pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                 sizeChart: [
                     { key: "chest", value: "32" }
@@ -168,6 +175,7 @@ describe("PRODUCT SERVICE", function () {
                 name: "Men Solid Muscle Fit Piqu Polo Shirt",
                 price: 700,
                 originalPrice: 5000,
+                description : "product description",
                 pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                 sizeChart: [
                     { key: "chest", value: "32" }
@@ -184,6 +192,7 @@ describe("PRODUCT SERVICE", function () {
                 name: "Women Green Solid Pure Cotton Corduroy Casual Shirt",
                 price: 1600,
                 originalPrice: 4000,
+                description : "product description",
                 pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                 sizeChart: [
                     { key: "waist", value: "36" }
@@ -219,6 +228,7 @@ describe("PRODUCT SERVICE", function () {
                             name: "Lightning McQueen Tee",
                             price: 200,
                             originalPrice: 5000,
+                            description : "product description",
                             pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                             sizeChart: [
                                 { key: "chest", value: "32" }
@@ -235,6 +245,7 @@ describe("PRODUCT SERVICE", function () {
                             name: "Men Solid Muscle Fit Piqu Polo Shirt",
                             price: 700,
                             originalPrice: 5000,
+                            description : "product description",
                             pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                             sizeChart: [
                                 { key: "chest", value: "32" }
@@ -251,6 +262,7 @@ describe("PRODUCT SERVICE", function () {
                             name: "Women Green Solid Pure Cotton Corduroy Casual Shirt",
                             price: 1600,
                             originalPrice: 4000,
+                            description : "product description",
                             pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                             sizeChart: [
                                 { key: "waist", value: "36" }
@@ -275,6 +287,7 @@ describe("PRODUCT SERVICE", function () {
                 name: "Women Green Solid Pure Cotton Corduroy Casual Shirt",
                 price: 1600,
                 originalPrice: 4000,
+                description : "product description",
                 pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                 sizeChart: [
                     { key: "waist", value: "36" }
@@ -312,6 +325,7 @@ describe("PRODUCT SERVICE", function () {
                     name: "Women Green Solid Pure Cotton Corduroy Casual Shirt",
                     price: 1600,
                     originalPrice: 4000,
+                    description : "product description",
                     pictures: ["https://www.something.com/something", "https://www.something.com/something"],
                     sizeChart: [
                         { key: "waist", value: "36" }

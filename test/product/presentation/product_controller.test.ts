@@ -43,6 +43,7 @@ describe("PRODUCT CONTROLLER", function () {
                             "name": "skirt",
                             "price": 234,
                             "original_price": 3400,
+                            "description" : "product description",
                             "pictures": [
                                 "https://skirt.com/pk",
                                 "https://skirt.com/pk"
@@ -103,6 +104,7 @@ describe("PRODUCT CONTROLLER", function () {
                                     "name": "skirt",
                                     "price": 234,
                                     "original_price": 3400,
+                                    "description" : "product description",
                                     "pictures": [
                                         "https://skirt.com/pk",
                                         "https://skirt.com/pk"
@@ -145,6 +147,7 @@ describe("PRODUCT CONTROLLER", function () {
                     "name": "TEST_DOC",
                     "price": 500,
                     "original_price": 4000,
+                    "description" : "product description",
                     "pictures": ["url1", "url2"],
                     "size_chart": [
                         { "key": "chest", "value": "32" },
@@ -167,6 +170,7 @@ describe("PRODUCT CONTROLLER", function () {
                             "name": "TEST_DOC",
                             "price": 500,
                             "original_price": 4000,
+                            "description" : "product description",
                             "pictures": ["url1", "url2"],
                             "size_chart": [
                                 { "key": "chest", "value": "32" },
@@ -198,6 +202,7 @@ describe("PRODUCT CONTROLLER", function () {
                                 "name": "TEST_DOC",
                                 "price": 500,
                                 "original_price": 4000,
+                                "description" : "product description",
                                 "pictures": ["url1", "url2"],
                                 "size_chart": [
                                     { "key": "chest", "value": "32" },

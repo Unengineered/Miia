@@ -67,6 +67,7 @@ export default class ProductRepository implements IProductRepository {
                         name: product.name,
                         price: product.price,
                         originalPrice: product.originalPrice,
+                        description :product.description,
                         pictures: product.pictures,
                         sizeChart: product.sizeChart,
                         storeLink: new StoreLinkEntity({ id: storeLink._id.toString(), name: storeLink.name, thumbnail: storeLink.thumbnail, instagram: storeLink.instagram })
@@ -95,6 +96,7 @@ export default class ProductRepository implements IProductRepository {
                         name: product.name,
                         price: product.price,
                         originalPrice: product.originalPrice,
+                        description :product.description,
                         pictures: product.pictures,
                         sizeChart: product.sizeChart,
                         storeLink: new StoreLinkEntity({ id: storeLink._id.toString(), name: storeLink.name, thumbnail: storeLink.thumbnail, instagram: storeLink.instagram })
