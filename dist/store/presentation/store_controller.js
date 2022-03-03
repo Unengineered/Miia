@@ -13,12 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const inter_service_message_1 = require("../../core/models/inter_service_message");
+const store_error_1 = __importDefault(require("../domain/errors/store_error"));
 const websocket_request_1 = __importDefault(require("../../core/models/websocket_request"));
-const product_error_1 = __importDefault(require("../domain/errors/product_error"));
 const websocket_response_1 = __importDefault(require("../../core/models/websocket_response"));
-class ProductController {
-    constructor({ productService }) {
-        this.productService = productService;
+class StoreController {
+    constructor({ storeService }) {
+        this.storeService = storeService;
     }
     handleRequest(interServiceMessage) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -30,23 +30,15 @@ class ProductController {
                     case "PUT": {
                         return this.handlePutRequest(interServiceMessage);
                     }
-                    case "DELETE": {
-                        return this.handleDeleteRequest(interServiceMessage);
-                    }
                 }
             }
-            throw new product_error_1.default({ code: "unimplimented" });
-        });
-    }
-    handleMessage(interServiceMessage) {
-        return __awaiter(this, void 0, void 0, function* () {
-            throw new product_error_1.default({ code: "unimplimented" });
+            throw new store_error_1.default({ code: "unimplimented" });
         });
     }
     handleGetRequest(interServiceMessage) {
         return __awaiter(this, void 0, void 0, function* () {
             if (interServiceMessage.packet instanceof websocket_request_1.default) {
-                const serviceResults = yield this.productService.getDetailedThriftProducts(interServiceMessage.packet);
+                const serviceResults = yield this.storeService.getStoreLinkList(interServiceMessage.packet);
                 return serviceResults.map((serviceResult) => {
                     return new inter_service_message_1.InterServiceMessage({
                         packet: serviceResult,
@@ -56,26 +48,24 @@ class ProductController {
                     });
                 });
             }
-            throw new product_error_1.default({ code: "unimplimented" });
+            throw new store_error_1.default({ code: "unimplimented" });
         });
     }
     handlePutRequest(interServiceMessage) {
         return __awaiter(this, void 0, void 0, function* () {
-            const serviceResults = yield this.productService.putProduct(interServiceMessage.packet);
-            return serviceResults.map((result) => {
-                return new inter_service_message_1.InterServiceMessage({
-                    packet: result,
-                    socketId: interServiceMessage.socketId,
-                    uid: interServiceMessage.uid,
-                    sendTo: result instanceof websocket_response_1.default ? inter_service_message_1.SendTo.SOCKET_ID : inter_service_message_1.SendTo.UID
+            if (interServiceMessage.packet instanceof websocket_request_1.default) {
+                const serviceResults = yield this.storeService.saveStoreLink(interServiceMessage.packet);
+                return serviceResults.map((serviceResult) => {
+                    return new inter_service_message_1.InterServiceMessage({
+                        packet: serviceResult,
+                        socketId: interServiceMessage.socketId,
+                        uid: interServiceMessage.uid,
+                        sendTo: serviceResult instanceof websocket_response_1.default ? inter_service_message_1.SendTo.SOCKET_ID : inter_service_message_1.SendTo.UID
+                    });
                 });
-            });
-        });
-    }
-    handleDeleteRequest(interServiceMessage) {
-        return __awaiter(this, void 0, void 0, function* () {
-            throw new product_error_1.default({ code: "unimplimented" });
+            }
+            throw new store_error_1.default({ code: "unimplimented" });
         });
     }
 }
-exports.default = ProductController;
+exports.default = StoreController;

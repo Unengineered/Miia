@@ -12,14 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const detailed_thrift_product_1 = require("../domain/entities/detailed_thrift_product");
 const product_error_1 = __importDefault(require("../domain/errors/product_error"));
+const store_link_1 = require("../../core/models/store_link");
+const detailed_thrift_product_1 = require("../domain/entities/detailed_thrift_product");
 class ProductRepository {
     constructor({ mongoDbConnection, prismaClient }) {
         this.mongoDbConnection = mongoDbConnection;
         this.prismaClient = prismaClient;
         this.detailedThriftProductModel = this.mongoDbConnection.model('DetailedThriftProduct', detailed_thrift_product_1.DetailedThriftProductSchema);
-        this.storeLinkModel = this.mongoDbConnection.model('StoreLink', detailed_thrift_product_1.StoreLinkSchema);
+        this.storeLinkModel = this.mongoDbConnection.model('StoreLink', store_link_1.StoreLinkSchema);
     }
     saveProduct(product) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -30,7 +31,7 @@ class ProductRepository {
             //         thumbnail: product.pictures[0]
             //     }
             // })
-            const storeId = (product.storeLink instanceof detailed_thrift_product_1.StoreLinkEntity) ? product.storeLink.id : product.storeLink;
+            const storeId = (product.storeLink instanceof store_link_1.StoreLinkEntity) ? product.storeLink.id : product.storeLink;
             const doc = new this.detailedThriftProductModel({
                 name: product.name,
                 price: product.price,
@@ -54,20 +55,24 @@ class ProductRepository {
             return this.detailedThriftProductModel
                 .find({ 'storeLink': id })
                 .populate('storeLink')
+                .lean()
                 .exec()
                 .then((products) => {
                 if (products === null)
                     return new product_error_1.default({ code: "no-items" });
                 return products.map((product) => {
                     //Remapping product to entity to avoid extra fields
+                    //TODO : Add error check for storelink
+                    const storeLink = product.storeLink;
                     return new detailed_thrift_product_1.DetailedThriftProductEntity({
-                        id: product.id,
+                        id: product._id.toString(),
                         name: product.name,
                         price: product.price,
                         originalPrice: product.originalPrice,
+                        description: product.description,
                         pictures: product.pictures,
                         sizeChart: product.sizeChart,
-                        storeLink: product.storeLink
+                        storeLink: new store_link_1.StoreLinkEntity({ id: storeLink._id.toString(), name: storeLink.name, thumbnail: storeLink.thumbnail, instagram: storeLink.instagram })
                     });
                 });
             })
@@ -82,20 +87,23 @@ class ProductRepository {
                 .find()
                 .populate('storeLink')
                 .sort({ "_id": -1 })
+                .lean()
                 .exec()
                 .then((products) => {
                 if (products === null)
                     return new product_error_1.default({ code: "no-items" });
                 return products.map((product) => {
                     //Remapping product to entity to avoid extra fields
+                    const storeLink = product.storeLink;
                     return new detailed_thrift_product_1.DetailedThriftProductEntity({
-                        id: product.id,
+                        id: product._id.toString(),
                         name: product.name,
                         price: product.price,
                         originalPrice: product.originalPrice,
+                        description: product.description,
                         pictures: product.pictures,
                         sizeChart: product.sizeChart,
-                        storeLink: product.storeLink
+                        storeLink: new store_link_1.StoreLinkEntity({ id: storeLink._id.toString(), name: storeLink.name, thumbnail: storeLink.thumbnail, instagram: storeLink.instagram })
                     });
                 });
             })
